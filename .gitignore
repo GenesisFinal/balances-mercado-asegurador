@@ -1,0 +1,13 @@
+*.pdf
+*.zip
+data/warehouse.sqlite*
+data/raw_zips/
+data/raw_ssn_extras/
+dist/
+.DS_Store
+__pycache__/
+*.pyc
+.env
+.env.*
+*token*.txt
+GitHub token.txt

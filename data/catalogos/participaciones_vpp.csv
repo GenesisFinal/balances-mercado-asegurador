@@ -1,0 +1,15 @@
+cod_controlante,nombre_controlante,cod_controlada,nombre_controlada,grupo_economico,pct_participacion,desde_periodo,hasta_periodo,fuente_verificacion
+0317,La Segunda Cooperativa,0618,La Segunda ART,Grupo La Segunda,0.9056,,,Memoria/Balances SSN; verificado 16Q vs AccGE y 5.02.03.03.02.01
+0317,La Segunda Cooperativa,0117,La Segunda Personas,Grupo La Segunda,0.7717,,,Memoria/Balances SSN; verificado 16Q vs AccGE y 5.02.03.03.02.01
+0317,La Segunda Cooperativa,0436,La Segunda Retiro,Grupo La Segunda,0.8966,,,Memoria/Balances SSN; verificado 16Q vs AccGE y 5.02.03.03.02.01
+0117,La Segunda Personas,0436,La Segunda Retiro,Grupo La Segunda,0.0517,,,"Composición accionaria La Segunda Retiro (5,17%); verificado AccGE(0117)/PN(0436)=5,40%"
+0224,Sancor Seguros,0626,Prevención ART,Grupo Sancor,0.9900,,,"Informes FIX SCR (99% Sancor Coop., 1% Alianza Inversora S.A.)"
+0224,Sancor Seguros,0930,Prevención Retiro,Grupo Sancor,0.9900,,,Grupo Sancor / FIX SCR (controlada directa de Sancor Coop.)
+0192,San Cristóbal,0620,Asociart ART,Grupo San Cristóbal,0.7173,,,"Moody's Local / Balances consolidados Grupo San Cristóbal (71,73%)"
+0192,San Cristóbal,0442,San Cristóbal Retiro,Grupo San Cristóbal,0.9993,,,"Moody's Local / Balances consolidados Grupo San Cristóbal (99,93%)"
+0121,Berkley Seguros,0624,Berkley ART,Grupo Berkley,0.8818,,,Regresión 16Q AccGE(0121) vs PN(0624) y BARSA (R2=0.999999; AM Best ~90%)
+0726,Federación Patronal,0425,Fed. Patronal Retiro,Grupo Federación Patronal,0.9900,,,Balances SSN Federación Patronal (valuación VPP controlante)
+0254,IAPS Entre Ríos,0437,IAPS Retiro,Grupo IAPS Entre Ríos,0.9900,,,Balances IAPSER / Contaduría Entre Ríos (Acciones Grupo Económico)
+0499,Provincia Seguros,0621,Provincia ART,Grupo Provincia,0.09335,2026-1,,"Capitalización 2026 Provincia ART (AccGE/PN = 9,335% exacto en 2026-1..3; 0% previo)"
+0515,Nación Seguros,0534,Nación Retiro,Grupo Nación,0.0010,,,"Composición oficial nacion-retiro.com.ar (99,90% BNA, 0,10% Nación Seguros)"
+0216,Segurcoop,0576,CNP Assurances,Intergrupo (Segurcoop -> CNP),0.1103,,,"Composición oficial CNP Seguros (11,03% Segurcoop; solo impacta agregados donde estén ambas)"

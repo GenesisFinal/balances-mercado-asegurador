@@ -1,0 +1,451 @@
+{
+  "validated_at": "2026-11-23T01:29:37Z",
+  "passed": true,
+  "failures": [],
+  "global": {
+    "latest_periodo": "2026-3",
+    "periodos": 16,
+    "companias_en_catalogo": 205,
+    "companias_sin_catalogo": 0,
+    "codigos_50104_sin_mapear": 0,
+    "max_descuadre_bg_miles": 0.0,
+    "max_descuadre_gq_emit_miles": 0.0,
+    "max_descuadre_gq_rt_miles": 0.0,
+    "max_descuadre_srq_rq_miles": 0.02,
+    "max_descuadre_srq_prq_miles": 0.068,
+    "max_descuadre_pr_subq_miles": 0.0,
+    "ipc_ratio_2026_3_vs_2025_3": 1.333549,
+    "ipc_pdf_esperado": 1.333549,
+    "ipc_diff": 0.0,
+    "vpp_links": 14,
+    "vpp_dag_aciclico": true
+  },
+  "pdfs_2026_3": [
+    {
+      "cod_cia": "0117",
+      "nombre": "La Segunda Personas",
+      "max_diff_miles": 0.485,
+      "max_field": "rescates",
+      "ok": true
+    },
+    {
+      "cod_cia": "0224",
+      "nombre": "Sancor Cooperativa",
+      "max_diff_miles": 0.472,
+      "max_field": "pasivo",
+      "ok": true
+    },
+    {
+      "cod_cia": "0251",
+      "nombre": "Life Seguros",
+      "max_diff_miles": 0.539,
+      "max_field": "pasivo",
+      "ok": true
+    },
+    {
+      "cod_cia": "0317",
+      "nombre": "La Segunda Cooperativa",
+      "max_diff_miles": 0.826,
+      "max_field": "res_ej",
+      "ok": true
+    },
+    {
+      "cod_cia": "0423",
+      "nombre": "Orígenes Retiro",
+      "max_diff_miles": 0.618,
+      "max_field": "res_ej",
+      "ok": true
+    },
+    {
+      "cod_cia": "0436",
+      "nombre": "La Segunda Retiro",
+      "max_diff_miles": 0.864,
+      "max_field": "pasivo",
+      "ok": true
+    },
+    {
+      "cod_cia": "0618",
+      "nombre": "La Segunda ART",
+      "max_diff_miles": 0.994,
+      "max_field": "pasivo",
+      "ok": true
+    },
+    {
+      "cod_cia": "0626",
+      "nombre": "Prevención ART",
+      "max_diff_miles": 0.747,
+      "max_field": "activo",
+      "ok": true
+    }
+  ],
+  "looker_totals": [
+    {
+      "segmento": "AP",
+      "tot_2026_3_pesos": 145994326915,
+      "tot_2025_3_pesos": 103157722729,
+      "ls_2026_3_pesos": 11338302012,
+      "max_diff_pesos": 0.0,
+      "ok": true
+    },
+    {
+      "segmento": "VIDA_IND",
+      "tot_2026_3_pesos": 443145410539,
+      "tot_2025_3_pesos": 324611557104,
+      "ls_2026_3_pesos": 164161153,
+      "max_diff_pesos": 0.0,
+      "ok": true
+    },
+    {
+      "segmento": "VIDA_COL",
+      "tot_2026_3_pesos": 326379220532,
+      "tot_2025_3_pesos": 253320349917,
+      "ls_2026_3_pesos": 5515405265,
+      "max_diff_pesos": 0.0,
+      "ok": true
+    },
+    {
+      "segmento": "VIDA_SD",
+      "tot_2026_3_pesos": 139417447993,
+      "tot_2025_3_pesos": 108314557692,
+      "ls_2026_3_pesos": 799990023,
+      "max_diff_pesos": 0.0,
+      "ok": true
+    },
+    {
+      "segmento": "SALUD_COL",
+      "tot_2026_3_pesos": 11984037885,
+      "tot_2025_3_pesos": 8925162996,
+      "ls_2026_3_pesos": 28506438,
+      "max_diff_pesos": 0.0,
+      "ok": true
+    },
+    {
+      "segmento": "SALUD_IND",
+      "tot_2026_3_pesos": 3855699714,
+      "tot_2025_3_pesos": 3076957065,
+      "ls_2026_3_pesos": 1682764,
+      "max_diff_pesos": 0.0,
+      "ok": true
+    },
+    {
+      "segmento": "RET_IND",
+      "tot_2026_3_pesos": 21358578248,
+      "tot_2025_3_pesos": 12009998654,
+      "ls_2026_3_pesos": 3070129034,
+      "max_diff_pesos": 0.0,
+      "ok": true
+    },
+    {
+      "segmento": "RET_COL",
+      "tot_2026_3_pesos": 72267585205,
+      "tot_2025_3_pesos": 64902772076,
+      "ls_2026_3_pesos": 4810661485,
+      "max_diff_pesos": 0.0,
+      "ok": true
+    }
+  ],
+  "looker_ap_ratios": [
+    {
+      "cod_cia": "0224",
+      "nombre": "Sancor Seguros",
+      "sin_pct": 40.22,
+      "gto_pct": 59.84,
+      "diff_max_pp": 0.0039,
+      "ok": true
+    },
+    {
+      "cod_cia": "0726",
+      "nombre": "Federación Patronal",
+      "sin_pct": 40.33,
+      "gto_pct": 51.11,
+      "diff_max_pp": 0.0034,
+      "ok": true
+    },
+    {
+      "cod_cia": "0251",
+      "nombre": "Life Seguros",
+      "sin_pct": 7.01,
+      "gto_pct": 86.64,
+      "diff_max_pp": 0.0004,
+      "ok": true
+    },
+    {
+      "cod_cia": "0117",
+      "nombre": "La Segunda Personas",
+      "sin_pct": 40.02,
+      "gto_pct": 50.78,
+      "diff_max_pp": 0.0046,
+      "ok": true
+    },
+    {
+      "cod_cia": "0692",
+      "nombre": "Zurich Santander",
+      "sin_pct": 5.64,
+      "gto_pct": 65.1,
+      "diff_max_pp": 0.0043,
+      "ok": true
+    }
+  ],
+  "vpp_consolidation": [
+    {
+      "n_cias": 2,
+      "has_madre": true,
+      "res_ej_bruto_m": -15577.08,
+      "elim_vpp_re_m": 5488.96,
+      "res_ej_consol_m": -10088.11,
+      "part_terc_re_m": 735.76,
+      "res_ej_madre_m": -9352.35,
+      "pn_bruto_m": 309187.25,
+      "elim_vpp_pn_m": -118252.02,
+      "pn_consol_m": 190935.23,
+      "part_terc_pn_m": 15850.97,
+      "pn_madre_m": 175084.26,
+      "inv_consol_m": 456426.0,
+      "parent_cap_ok": true,
+      "diff_bg_miles": 0.0,
+      "diff_er_miles": 0.0,
+      "diff_madre_miles": 0.0,
+      "ok": true,
+      "grupo": "Grupo Berkley"
+    },
+    {
+      "n_cias": 2,
+      "has_madre": true,
+      "res_ej_bruto_m": 4933.41,
+      "elim_vpp_re_m": -5.54,
+      "res_ej_consol_m": 4927.88,
+      "part_terc_re_m": -0.06,
+      "res_ej_madre_m": 4927.82,
+      "pn_bruto_m": 1140616.59,
+      "elim_vpp_pn_m": -5033.73,
+      "pn_consol_m": 1135582.87,
+      "part_terc_pn_m": 50.85,
+      "pn_madre_m": 1135532.02,
+      "inv_consol_m": 2812356.72,
+      "parent_cap_ok": true,
+      "diff_bg_miles": 0.0,
+      "diff_er_miles": 0.0,
+      "diff_madre_miles": 0.0,
+      "ok": true,
+      "grupo": "Grupo Federación Patronal"
+    },
+    {
+      "n_cias": 2,
+      "has_madre": true,
+      "res_ej_bruto_m": -6773.98,
+      "elim_vpp_re_m": 443.32,
+      "res_ej_consol_m": -6330.65,
+      "part_terc_re_m": 4.48,
+      "res_ej_madre_m": -6326.18,
+      "pn_bruto_m": 255540.24,
+      "elim_vpp_pn_m": -23375.06,
+      "pn_consol_m": 232165.18,
+      "part_terc_pn_m": 236.11,
+      "pn_madre_m": 231929.07,
+      "inv_consol_m": 175638.19,
+      "parent_cap_ok": true,
+      "diff_bg_miles": 0.0,
+      "diff_er_miles": 0.0,
+      "diff_madre_miles": 0.0,
+      "ok": true,
+      "grupo": "Grupo IAPS Entre Ríos"
+    },
+    {
+      "n_cias": 4,
+      "has_madre": true,
+      "res_ej_bruto_m": -76814.9,
+      "elim_vpp_re_m": 24774.27,
+      "res_ej_consol_m": -52040.63,
+      "part_terc_re_m": 2189.07,
+      "res_ej_madre_m": -49851.56,
+      "pn_bruto_m": 874958.11,
+      "elim_vpp_pn_m": -234824.06,
+      "pn_consol_m": 640134.05,
+      "part_terc_pn_m": 32825.36,
+      "pn_madre_m": 607308.69,
+      "inv_consol_m": 1098100.6,
+      "parent_cap_ok": true,
+      "diff_bg_miles": 0.0,
+      "diff_er_miles": 0.0,
+      "diff_madre_miles": 0.0,
+      "ok": true,
+      "grupo": "Grupo La Segunda"
+    },
+    {
+      "n_cias": 2,
+      "has_madre": false,
+      "res_ej_bruto_m": -20497.69,
+      "elim_vpp_re_m": 5.63,
+      "res_ej_consol_m": -20492.06,
+      "part_terc_re_m": 0.0,
+      "res_ej_madre_m": -20492.06,
+      "pn_bruto_m": 948325.01,
+      "elim_vpp_pn_m": -184.74,
+      "pn_consol_m": 948140.27,
+      "part_terc_pn_m": 0.0,
+      "pn_madre_m": 948140.27,
+      "inv_consol_m": 1766986.35,
+      "parent_cap_ok": true,
+      "diff_bg_miles": 0.0,
+      "diff_er_miles": 0.0,
+      "diff_madre_miles": 0.0,
+      "ok": true,
+      "grupo": "Grupo Nación"
+    },
+    {
+      "n_cias": 3,
+      "has_madre": false,
+      "res_ej_bruto_m": -27350.96,
+      "elim_vpp_re_m": 3276.58,
+      "res_ej_consol_m": -24074.38,
+      "part_terc_re_m": 0.0,
+      "res_ej_madre_m": -24074.38,
+      "pn_bruto_m": 357927.45,
+      "elim_vpp_pn_m": -16640.52,
+      "pn_consol_m": 341286.93,
+      "part_terc_pn_m": 0.0,
+      "pn_madre_m": 341286.93,
+      "inv_consol_m": 1085460.22,
+      "parent_cap_ok": true,
+      "diff_bg_miles": 0.0,
+      "diff_er_miles": 0.0,
+      "diff_madre_miles": 0.0,
+      "ok": true,
+      "grupo": "Grupo Provincia"
+    },
+    {
+      "n_cias": 3,
+      "has_madre": true,
+      "res_ej_bruto_m": -69318.07,
+      "elim_vpp_re_m": 22226.1,
+      "res_ej_consol_m": -47091.97,
+      "part_terc_re_m": 8852.22,
+      "res_ej_madre_m": -38239.75,
+      "pn_bruto_m": 901846.04,
+      "elim_vpp_pn_m": -143335.31,
+      "pn_consol_m": 758510.73,
+      "part_terc_pn_m": 35225.79,
+      "pn_madre_m": 723284.94,
+      "inv_consol_m": 1828599.91,
+      "parent_cap_ok": true,
+      "diff_bg_miles": 0.0,
+      "diff_er_miles": 0.0,
+      "diff_madre_miles": 0.0,
+      "ok": true,
+      "grupo": "Grupo San Cristóbal"
+    },
+    {
+      "n_cias": 3,
+      "has_madre": true,
+      "res_ej_bruto_m": -16811.1,
+      "elim_vpp_re_m": -1115.32,
+      "res_ej_consol_m": -17926.42,
+      "part_terc_re_m": -11.27,
+      "res_ej_madre_m": -17937.68,
+      "pn_bruto_m": 1438795.19,
+      "elim_vpp_pn_m": -240476.44,
+      "pn_consol_m": 1198318.76,
+      "part_terc_pn_m": 2429.05,
+      "pn_madre_m": 1195889.7,
+      "inv_consol_m": 1990187.84,
+      "parent_cap_ok": true,
+      "diff_bg_miles": 0.0,
+      "diff_er_miles": 0.0,
+      "diff_madre_miles": 0.0,
+      "ok": true,
+      "grupo": "Grupo Sancor"
+    },
+    {
+      "n_cias": 185,
+      "has_madre": false,
+      "res_ej_bruto_m": -344062.75,
+      "elim_vpp_re_m": 55214.67,
+      "res_ej_consol_m": -288848.08,
+      "part_terc_re_m": 0.0,
+      "res_ej_madre_m": -288848.08,
+      "pn_bruto_m": 12430622.6,
+      "elim_vpp_pn_m": -786341.92,
+      "pn_consol_m": 11644280.68,
+      "part_terc_pn_m": 0.0,
+      "pn_madre_m": 11644280.68,
+      "inv_consol_m": 25181111.07,
+      "parent_cap_ok": true,
+      "diff_bg_miles": 0.0,
+      "diff_er_miles": 0.0,
+      "diff_madre_miles": 0.0,
+      "ok": true,
+      "grupo": "TOTAL MERCADO (2026-3)"
+    }
+  ],
+  "gran_ramos_latest": [
+    {
+      "gran_ramo": "Patrimoniales",
+      "n_cias": 122,
+      "emit_sd_m": 4268672.62,
+      "res_tec_m": -109627.86,
+      "ok": true
+    },
+    {
+      "gran_ramo": "ART",
+      "n_cias": 27,
+      "emit_sd_m": 1948669.85,
+      "res_tec_m": -170790.96,
+      "ok": true
+    },
+    {
+      "gran_ramo": "Personas",
+      "n_cias": 122,
+      "emit_sd_m": 1129885.51,
+      "res_tec_m": 412927.61,
+      "ok": true
+    },
+    {
+      "gran_ramo": "Retiro",
+      "n_cias": 15,
+      "emit_sd_m": 93626.16,
+      "res_tec_m": 60897.9,
+      "ok": true
+    }
+  ],
+  "gran_ramos_2026_3": [
+    {
+      "gran_ramo": "Patrimoniales",
+      "n_cias": 122,
+      "emit_sd_m": 4268672.62,
+      "res_tec_m": -109627.86,
+      "ok": true
+    },
+    {
+      "gran_ramo": "ART",
+      "n_cias": 27,
+      "emit_sd_m": 1948669.85,
+      "res_tec_m": -170790.96,
+      "ok": true
+    },
+    {
+      "gran_ramo": "Personas",
+      "n_cias": 122,
+      "emit_sd_m": 1129885.51,
+      "res_tec_m": 412927.61,
+      "ok": true
+    },
+    {
+      "gran_ramo": "Retiro",
+      "n_cias": 15,
+      "emit_sd_m": 93626.16,
+      "res_tec_m": 60897.9,
+      "ok": true
+    }
+  ],
+  "ssn_extras": {
+    "present": true,
+    "generated_at": "2026-11-23T01:29:30Z",
+    "missing": [],
+    "stale_sources": [],
+    "tasa_testigo_rv_latest": "Nov 2026",
+    "prod_mensual_latest": "Sep 2026",
+    "retiro_est_latest": "Jun 2026",
+    "canales_venta_latest": 2025,
+    "polizas_sin_prim_latest": "2º Trim. 2026 (Jun 2026)"
+  }
+}

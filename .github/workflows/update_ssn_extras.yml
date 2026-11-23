@@ -1,0 +1,39 @@
+name: Actualizar estadísticas SSN externas
+
+on:
+  schedule:
+    - cron: '0 13 * * 1'  # Lunes 10:00 ART
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-extras:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar dependencias mínimas
+        run: pip install requests
+
+      - name: Actualizar fuentes SSN externas y recompilar tablero
+        run: python3 update_quarter.py --extras-only
+
+      - name: Publicar cambios en GitHub y Pages
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add data/processed/ssn_extras.json data/processed/validation_report.json docs/index.html docs/.nojekyll
+            git commit -m "chore: actualización automática estadísticas SSN ($(date -u +'%Y-%m-%d'))"
+            git push
+          else
+            echo "Sin novedades en fuentes SSN externas."
+          fi

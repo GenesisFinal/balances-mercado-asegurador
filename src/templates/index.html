@@ -1,0 +1,1801 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monitor del Mercado Asegurador Argentino — Balances SSN</title>
+  <style>
+{{FONTS_CSS}}
+{{STYLES_CSS}}
+  </style>
+</head>
+<body>
+
+  <!-- Header Institucional La Segunda -->
+  <header class="brand-header">
+    <div class="brand-header-inner">
+      <div class="brand-left">
+        <div class="brand-logo-lockup">
+          {{BRAND_LOGO_SVG}}
+        </div>
+        <div class="brand-titles">
+          <h1>Monitor del Mercado Asegurador Argentino</h1>
+          <p id="hdrSubtitle">Balances SSN · SINENSUP (Edición ejecutiva 100% offline)</p>
+        </div>
+      </div>
+      <div class="brand-badges">
+        <span class="header-pill" id="hdrPeriodoPill">Cierre: —</span>
+        <span class="header-pill" id="hdrBasePill">Base: Acumulado Ejercicio</span>
+        <button type="button" class="header-deck-btn" id="btnOpenDeck" title="Abrir armador de presentación PDF">
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="9" rx="1.5"/><path d="M5.5 14h5M8 11.5V14"/></svg>
+          <span>Presentación</span>
+          <span class="deck-count-badge" id="hdrDeckCount">0</span>
+        </button>
+      </div>
+    </div>
+    <div class="mosaic-strip" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+  </header>
+
+  <!-- Barra de Filtros Globales y Pestañas -->
+  <div class="sticky-controls">
+    <div class="filter-bar">
+      <div class="filter-field wide">
+        <label for="fPeriodo">Período de cierre</label>
+        <select id="fPeriodo"></select>
+      </div>
+      <div class="filter-field wide">
+        <label for="fBase">Base temporal</label>
+        <select id="fBase">
+          <option value="acum" selected>Acumulado Ejercicio</option>
+          <option value="estanco">Trimestre Estanco (3m)</option>
+          <option value="ltm">Últimos 12 Meses (LTM)</option>
+        </select>
+      </div>
+      <div class="filter-field wide">
+        <label for="fMoneda">Moneda</label>
+        <select id="fMoneda">
+          <option value="cierre" selected>Moneda de cada cierre (SSN)</option>
+          <option value="const" id="fMonedaConstOpt">Moneda constante (IPC)</option>
+        </select>
+      </div>
+      <div class="filter-field wide">
+        <label for="fTipo">Tipo de Compañía</label>
+        <select id="fTipo">
+          <option value="">Todos</option>
+        </select>
+      </div>
+      <div class="filter-field wide">
+        <label for="fGranRamo">Ramo (Negocio)</label>
+        <select id="fGranRamo">
+          <option value="">Todos (Balance completo)</option>
+          <option value="Patrimoniales">Patrimoniales</option>
+          <option value="ART">Riesgos de Trabajo (ART)</option>
+          <option value="Personas">Personas</option>
+          <option value="Retiro">Retiro</option>
+        </select>
+      </div>
+      <div class="filter-field">
+        <label for="fConst">Constitución</label>
+        <select id="fConst">
+          <option value="">Todas</option>
+        </select>
+      </div>
+      <div class="filter-field wide">
+        <label for="fGrupo">Grupo Económico</label>
+        <select id="fGrupo">
+          <option value="">Todos</option>
+        </select>
+      </div>
+      <div class="filter-field field-consol">
+        <label for="fConsol">Consolidación</label>
+        <select id="fConsol">
+          <option value="madre" selected>Atribuible a Empresa Madre (RT 21)</option>
+          <option value="vpp">Consolidado 100% (neto VPP)</option>
+          <option value="bruto">Suma simple (sin ajuste)</option>
+        </select>
+      </div>
+      <div class="filter-field field-unidad">
+        <label for="fUnidad">Unidad</label>
+        <select id="fUnidad">
+          <option value="K">$ Miles (K)</option>
+          <option value="M" selected>$ Millones (M)</option>
+          <option value="MM">$ Miles de millones (MM)</option>
+          <option value="B">$ Billones (B)</option>
+        </select>
+      </div>
+      <div class="filter-actions">
+        <span class="live-count-pill num" id="liveCountPill">—</span>
+        <button class="btn" id="btnResetFilters" type="button">Restablecer</button>
+      </div>
+    </div>
+
+    <nav class="tab-nav-wrap" role="tablist" aria-label="Secciones del tablero">
+      <button class="tab-btn active" data-tab="panorama" role="tab">1. Panorama</button>
+      <button class="tab-btn tab-btn-l2" data-tab="grupol2" role="tab">2. Grupo L2</button>
+      <button class="tab-btn" data-tab="rankings" role="tab">3. Rankings</button>
+      <button class="tab-btn" data-tab="ramos" role="tab">4. Ramos y Subramos</button>
+      <button class="tab-btn" data-tab="personas" role="tab">5. Personas</button>
+      <button class="tab-btn" data-tab="retiro" role="tab">6. Retiro</button>
+      <button class="tab-btn" data-tab="grupos" role="tab">7. Grupos y Constitución</button>
+      <button class="tab-btn" data-tab="ficha" role="tab">8. Ficha y Comparador</button>
+      <button class="tab-btn" data-tab="balance" role="tab">9. Balance Contable</button>
+      <button class="tab-btn" data-tab="mensual" role="tab">10. Pulso Mensual</button>
+      <button class="tab-btn" data-tab="metodologia" role="tab">11. Metodología</button>
+    </nav>
+  </div>
+
+  <!-- Contenedor Principal -->
+  <main class="main-container">
+    <div id="globalAlert" class="alert-banner"></div>
+
+    <!-- TAB 1: PANORAMA DEL MERCADO -->
+    <section id="tab-panorama" class="tab-pane active">
+      <div class="deck-panel-bar">
+        <button type="button" class="deck-panel-add-btn" data-deck-panel-for="panKpis" data-deck-panel-title="Indicadores Principales del Mercado" title="Agregar el panel completo de KPIs como una diapositiva">+ Agregar panel KPI a presentación</button>
+      </div>
+      <div class="kpi-grid" id="panKpis"></div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Composición por Tipo de Compañía</h3>
+              <p class="card-subtitle">Primas Emitidas SD en Billones ($ B) y % sobre el total</p>
+            </div>
+          </div>
+          <div class="chart-box"><canvas id="chPanTipo"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title" id="panGranTitle">Composición por Gran Ramo</h3>
+              <p class="card-subtitle" id="panGranSub">Primas Emitidas SD en Billones ($ B) y % del total</p>
+            </div>
+          </div>
+          <div class="chart-box"><canvas id="chPanGranRamo"></canvas></div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Evolución 12 Trimestres: Primas y Resultados</h3>
+              <p class="card-subtitle" id="panEvoSub1">Primas Emitidas SD vs Resultado Técnico, Financiero y del Ejercicio</p>
+            </div>
+          </div>
+          <div class="chart-box"><canvas id="chPanEvoMontos"></canvas></div>
+          <p class="chart-outlier-note" id="panEvoMontosOutlierNote" hidden></p>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Evolución 12 Trimestres: Ratios Técnicos</h3>
+              <p class="card-subtitle" id="panEvoSub2">Siniestralidad %, G. Producción %, G. Explotación % y Ratio Combinado % (línea de referencia 100%)</p>
+            </div>
+          </div>
+          <div class="chart-box"><canvas id="chPanEvoRatios"></canvas></div>
+          <p class="chart-outlier-note" id="panEvoRatiosOutlierNote" hidden></p>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Concentración del Mercado</h3>
+              <p class="card-subtitle">Participación acumulada e Índice Herfindahl-Hirschman (HHI) sobre Primas Emitidas</p>
+            </div>
+          </div>
+          <div id="panConcentracionWrap"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Estructura por Constitución Societaria</h3>
+              <p class="card-subtitle">Distribución del universo filtrado por naturaleza jurídica</p>
+            </div>
+          </div>
+          <div class="chart-box short"><canvas id="chPanConst"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: GRUPO L2 -->
+    <section id="tab-grupol2" class="tab-pane">
+      <div class="card spotlight-card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Posicionamiento Grupo La Segunda (en el período y base activos)</h2>
+            <p class="card-subtitle">Click en cualquier entidad para abrir su Ficha contable y comparador de pares</p>
+          </div>
+          <div class="card-header-right">
+            <span class="badge badge-ls" id="lsGlobalShareBadge">—</span>
+          </div>
+        </div>
+        <div class="ls-mini-grid" id="lsSpotlightGrid"></div>
+      </div>
+
+      <div class="deck-panel-bar">
+        <button type="button" class="deck-panel-add-btn" data-deck-panel-for="l2Kpis" data-deck-panel-title="Indicadores Consolidados — Grupo L2" title="Agregar el panel completo de 6 KPIs como una diapositiva">+ Agregar panel KPI a presentación</button>
+      </div>
+      <div class="kpi-grid" id="l2Kpis"></div>
+
+      <div class="card" id="l2CompCard">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Composición del Grupo L2 por Empresa (% del Total del Grupo)</h3>
+            <p class="card-subtitle" id="l2CompSub">Peso relativo de cada compañía en Primas, Activo, Inversiones, Pasivo, Patrimonio Neto y Resultados</p>
+          </div>
+          <div class="card-header-right">
+            <div class="seg-bar" id="l2BasisTabs">
+              <button class="seg-btn active" data-l2basis="neto_vpp" type="button">Aporte Propio Neto VPP (100% = Consol.)</button>
+              <button class="seg-btn" data-l2basis="bruto" type="button">Balances Individuales (Suma Simple = 100%)</button>
+            </div>
+            <button class="btn btn-primary btn-sm" id="btnExportL2" type="button">Exportar CSV</button>
+          </div>
+        </div>
+        <div class="table-wrap" id="l2CompTableWrap"></div>
+        <p class="chart-info-note" id="l2VppNote"></p>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Participación % de cada Empresa en el Grupo L2</h3>
+              <p class="card-subtitle" id="l2MixSub">Distribución porcentual acumulada (100% = Total Grupo L2)</p>
+            </div>
+          </div>
+          <div class="chart-box tall"><canvas id="chL2Mix100"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Aporte al Resultado del Grupo L2</h3>
+              <p class="card-subtitle" id="l2ResSub">Resultado Técnico, Financiero y del Ejercicio por entidad vs. Total Grupo L2</p>
+            </div>
+          </div>
+          <div class="chart-box tall"><canvas id="chL2ResBridge"></canvas></div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title" id="l2GranTitle">Composición por Gran Ramo — Grupo L2</h3>
+              <p class="card-subtitle" id="l2GranSub">Primas Emitidas SD y % del total del Grupo</p>
+            </div>
+          </div>
+          <div class="chart-box"><canvas id="chL2GranRamo"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title" id="l2GranMktTitle">Composición por Gran Ramo — Mercado Total</h3>
+              <p class="card-subtitle" id="l2GranMktSub">Referencia de mercado: Primas Emitidas SD en Billones ($ B) y % del total</p>
+            </div>
+          </div>
+          <div class="chart-box"><canvas id="chL2GranRamoMkt"></canvas></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Evolución Histórica del Grupo L2 (12 Trimestres)</h3>
+            <p class="card-subtitle" id="l2EvoSub">Evolución trimestral por compañía y peso consolidado según base y moneda activas</p>
+          </div>
+          <div class="card-header-right">
+            <div class="seg-bar" id="l2EvoUnitTabs" role="group" aria-label="Escala del gráfico">
+              <button class="seg-btn active" data-l2evomode="abs" type="button">Montos ($)</button>
+              <button class="seg-btn" data-l2evomode="pct" type="button">% del Grupo</button>
+            </div>
+            <select id="l2EvoMetric" class="inline-input">
+              <option value="emit_sd" selected>Primas Emitidas SD</option>
+              <option value="activo">Activo Total</option>
+              <option value="inv">Inversiones</option>
+              <option value="pasivo">Pasivo Total</option>
+              <option value="pn">Patrimonio Neto</option>
+              <option value="res_ej">Resultado del Ejercicio</option>
+              <option value="mkt_share">Share Grupo L2 en Mercado Total (%)</option>
+            </select>
+          </div>
+        </div>
+        <div class="chart-box tall"><canvas id="chL2Evo"></canvas></div>
+      </div>
+    </section>
+
+    <!-- TAB 3: RANKINGS Y COMPARATIVOS -->
+    <section id="tab-rankings" class="tab-pane">
+      <div class="card" data-no-expand>
+        <div class="card-header">
+          <div class="seg-bar" id="rkMetricTabs">
+            <button class="seg-btn active" data-mode="prod">Producción y Share</button>
+            <button class="seg-btn" data-mode="res">Resultados y Rentabilidad</button>
+            <button class="seg-btn" data-mode="sin">Siniestralidad y Combinado</button>
+            <button class="seg-btn" data-mode="gto">Gastos (Prod. y Expl.)</button>
+            <button class="seg-btn" data-mode="fin">Retorno Financiero e Inv.</button>
+            <button class="seg-btn" data-mode="solv">Solvencia y Patrimonio</button>
+          </div>
+          <div class="filter-actions" style="margin-left:0">
+            <input type="text" id="rkSearch" class="inline-input" placeholder="Buscar compañía o código..." style="width:200px" />
+            <select id="rkLimit" class="inline-input">
+              <option value="15">Top 15</option>
+              <option value="30" selected>Top 30</option>
+              <option value="50">Top 50</option>
+              <option value="999">Todas</option>
+            </select>
+            <label style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;cursor:pointer">
+              <input type="checkbox" id="rkHighlightLS" checked /> Destacar La Segunda
+            </label>
+            <label style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;cursor:pointer" title="Excluye a 0541 — Zurich International Life de los gráficos, promedios y tabla del ranking">
+              <input type="checkbox" id="rkExclZurichLife" /> Excluir Zurich Life
+            </label>
+            <button class="btn btn-primary" id="btnExportRk" type="button">Exportar CSV</button>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-bottom:14px">
+          <div class="focus-block">
+            <div class="focus-block-hdr">
+              <h4 class="focus-block-title" id="rkChartBarTitle">Top 15 Compañías</h4>
+            </div>
+            <div class="chart-box tall"><canvas id="chRkBar"></canvas></div>
+            <p class="chart-outlier-note" id="rkBarOutlierNote" hidden></p>
+          </div>
+          <div class="focus-block">
+            <div class="focus-block-hdr">
+              <h4 class="focus-block-title" id="rkChartScatterTitle">Mapa de Posicionamiento</h4>
+            </div>
+            <div class="chart-box tall"><canvas id="chRkScatter"></canvas></div>
+            <p class="chart-outlier-note" id="rkScatterOutlierNote" hidden></p>
+            <p class="chart-info-note" id="rkScatterInfoNote" hidden></p>
+          </div>
+        </div>
+
+        <div class="focus-block">
+          <div class="focus-block-hdr">
+            <h4 class="focus-block-title" id="rkTableTitle">Tabla de Ranking y Comparativo</h4>
+          </div>
+          <div class="table-wrap" id="rkTableWrap"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: RAMOS Y SUBRAMOS -->
+    <section id="tab-ramos" class="tab-pane">
+      <div class="card" data-no-expand>
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Mercado por Ramos y Subramos</h3>
+            <p class="card-subtitle">Anexos 12-A / 13-A / 14-A — 23 Ramos y 54 Subramos en Seguros Directos</p>
+          </div>
+          <div class="seg-bar" id="rmGranFilterWrap">
+            <button class="seg-btn active" data-gran="">Todos</button>
+            <button class="seg-btn" data-gran="Patrimoniales">Patrimoniales</button>
+            <button class="seg-btn" data-gran="ART">ART</button>
+            <button class="seg-btn" data-gran="Personas">Personas</button>
+            <button class="seg-btn" data-gran="Retiro">Retiro</button>
+            <button class="btn btn-primary" id="btnExportRm" type="button">Exportar CSV</button>
+          </div>
+        </div>
+
+        <div id="rmViewRamos">
+          <div class="rm-level-bar" id="rmLevelBar">
+            <div class="seg-bar" id="rmLevelTabs">
+              <button class="seg-btn active" data-level="ramo" id="btnRmLevelRamo" type="button">Por Ramo</button>
+              <button class="seg-btn" data-level="subramo" id="btnRmLevelSubramo" type="button">Por Subramo (Drilldown)</button>
+            </div>
+            <span class="rm-level-hint" id="rmLevelHint">Cambiá a «Por Subramo» o hacé click en cualquier ramo para abrir sus subramos (AP Colectivo, AP Individual, Vida Saldo Deudor, etc.).</span>
+          </div>
+          <div class="grid-2">
+            <div class="focus-block">
+              <div class="focus-block-hdr">
+                <h4 class="focus-block-title" id="rmMixTitle">Mix de Producción por Ramo (Top 12)</h4>
+              </div>
+              <div class="chart-box tall"><canvas id="chRmMix"></canvas></div>
+            </div>
+            <div class="focus-block">
+              <div class="focus-block-hdr">
+                <h4 class="focus-block-title" id="rmRatiosTitle">Siniestralidad vs Gastos por Ramo (Top 12)</h4>
+              </div>
+              <div class="chart-box tall"><canvas id="chRmRatios"></canvas></div>
+              <p class="chart-outlier-note" id="rmRatiosOutlierNote" hidden></p>
+            </div>
+          </div>
+          <div class="focus-block" style="margin-bottom:16px">
+            <div class="focus-block-hdr">
+              <div>
+                <h4 class="focus-block-title" id="rmTableTitle">Desglose del Mercado por Ramo</h4>
+                <p class="card-subtitle" id="rmTableSubtitle" style="margin:2px 0 0">Click en cualquier ramo de la tabla para ver sus subramos, el ranking de líderes y su evolución histórica abajo.</p>
+              </div>
+            </div>
+            <div class="table-wrap" id="rmTableWrap"></div>
+          </div>
+
+          <div class="card" id="rmDrillCard" style="background:var(--surface-alt);margin-bottom:0">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title" id="rmDrillTitle">Líderes del Ramo: Automotores</h3>
+                <p class="card-subtitle">Top 20 compañías + La Segunda en Seguros Directos (Anexos 12-A / 13-A / 14-A)</p>
+              </div>
+              <div class="card-header-right">
+                <button class="btn btn-sm" id="btnRmBackToRamo" type="button" style="display:none">← Ver ramo completo</button>
+                <button class="btn btn-sm" id="btnExportRmDrill" type="button">Exportar CSV Líderes</button>
+              </div>
+            </div>
+            <div class="focus-block" id="rmSubDrillBlock" style="display:none;margin-bottom:14px">
+              <div class="focus-block-hdr">
+                <div>
+                  <h4 class="focus-block-title" id="rmSubDrillTitle">Subramos del Ramo</h4>
+                  <p class="card-subtitle" style="margin:2px 0 0">Click en un subramo para filtrar los líderes y la evolución histórica abajo.</p>
+                </div>
+              </div>
+              <div class="rm-sub-pills" id="rmSubPills"></div>
+              <div class="table-wrap" id="rmSubDrillTableWrap"></div>
+            </div>
+            <div class="grid-2" style="margin-bottom:0">
+              <div class="focus-block">
+                <div class="focus-block-hdr">
+                  <h4 class="focus-block-title" id="rmDrillLeadersTitle">Tabla de Líderes del Ramo</h4>
+                </div>
+                <div class="table-wrap" id="rmDrillTableWrap"></div>
+              </div>
+              <div class="focus-block">
+                <div class="focus-block-hdr">
+                  <h4 class="focus-block-title" id="rmDrillEvoTitle">Evolución 12 Trimestres del Ramo</h4>
+                </div>
+                <div class="chart-box"><canvas id="chRmDrillEvo"></canvas></div>
+                <p class="chart-outlier-note" id="rmDrillEvoOutlierNote" hidden></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: PERSONAS -->
+    <section id="tab-personas" class="tab-pane">
+      <div class="card" data-no-expand>
+        <div class="card-header">
+          <div class="seg-bar" id="perViewTabs">
+            <button class="seg-btn active" data-view="gestion">Gestión y Subramos</button>
+            <button class="seg-btn" data-view="canales">Canales y Comisiones</button>
+            <button class="seg-btn" data-view="judreas">Judicialización y Reaseguro</button>
+            <button class="seg-btn" data-view="polizas">Pólizas y Siniestros (SSN)</button>
+            <button class="seg-btn" data-view="looker">Rankings</button>
+          </div>
+          <div class="card-header-right">
+            <div class="seg-bar" id="perUnivTabs">
+              <button class="seg-btn active" data-univ="all" title="Incluye aseguradoras exclusivas de Personas y carteras Personas de mixtas">Todo el Ramo</button>
+              <button class="seg-btn" data-univ="excl" title="Solo aseguradoras especializadas exclusivamente en Personas">Solo Exclusivas</button>
+            </div>
+            <label style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;cursor:pointer;white-space:nowrap" title="Excluye a 0541 — Zurich International Life (cierre 31/12 acumula 9 meses en sep-26)">
+              <input type="checkbox" id="perExclZurich" checked /> Excluir Zurich Int. Life
+            </label>
+            <button class="btn btn-primary" id="btnExportPer" type="button">Exportar CSV</button>
+          </div>
+        </div>
+        <div class="pr-scope-bar" id="perScopeBar">
+          <div class="pr-pill-row">
+            <span class="pr-pill-lbl">Ramo</span>
+            <div class="seg-bar" id="perRamoPills"></div>
+          </div>
+          <div class="pr-pill-row">
+            <span class="pr-pill-lbl">Subramo</span>
+            <div class="rm-sub-pills" id="perSubramoPills" style="margin-bottom:0"></div>
+          </div>
+          <div class="pr-meta-strip" id="perContextNote">—</div>
+        </div>
+      </div>
+
+      <div id="perViewGestion">
+        <div class="deck-panel-bar">
+          <button type="button" class="deck-panel-add-btn" data-deck-panel-for="perBenchmarkKpis" data-deck-panel-title="Indicadores de Gestión — Personas (La Segunda vs. Top 10 vs. Mercado)" title="Agregar el panel completo de 8 KPIs como una diapositiva">+ Agregar panel KPI a presentación</button>
+        </div>
+        <div class="bench-kpi-grid bench-kpi-grid-4" id="perBenchmarkKpis"></div>
+
+        <div class="card" id="perSubMatrixCard">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Apertura Comparativa por Subramo: Mercado vs. Top 10 vs. La Segunda Personas</h3>
+              <p class="card-subtitle">Click en cualquier subramo para filtrar toda la pestaña (el Top 10 de cada fila se calcula dentro de ese subramo específico)</p>
+            </div>
+            <div class="card-header-right">
+              <button class="btn btn-sm" id="btnExportPerSub" type="button">Exportar CSV Subramos</button>
+            </div>
+          </div>
+          <div class="table-wrap" id="perSubMatrixWrap"></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title" id="perRatiosTitle">Comparativa de Ratios Técnicos: Mercado vs. Top 10 vs. La Segunda</h3>
+                <p class="card-subtitle" id="perRatiosSub">Incidencia % sobre Primas Devengadas según alcance activo</p>
+              </div>
+            </div>
+            <div class="chart-box"><canvas id="chPerRatios"></canvas></div>
+            <p class="chart-outlier-note" id="perRatiosOutlierNote" hidden></p>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title" id="perScatterTitle">Mapa de Posicionamiento (Top 25 + La Segunda)</h3>
+                <p class="card-subtitle" id="perScatterSub">Siniestralidad % vs. Gastos Netos % (diagonal punteada = Combinado 100%)</p>
+              </div>
+            </div>
+            <div class="chart-box"><canvas id="chPerScatter"></canvas></div>
+            <p class="chart-outlier-note" id="perScatterOutlierNote" hidden></p>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title" id="perEvoTitle">Evolución 12 Trimestres: Mercado vs. Top 10 vs. La Segunda</h3>
+                <p class="card-subtitle" id="perEvoSub">Seguimiento histórico en moneda homogénea para el subramo seleccionado</p>
+              </div>
+              <div class="card-header-right">
+                <select id="perEvoMetric" class="inline-input">
+                  <option value="comb_pct" selected>Ratio Combinado (%)</option>
+                  <option value="sin_pct">Siniestralidad (%)</option>
+                  <option value="gto_pct">Gastos Netos (%)</option>
+                  <option value="rt_pct">Resultado Técnico (% s/ Dev.)</option>
+                  <option value="ls_share">Share La Segunda (%)</option>
+                  <option value="emit_sd">Primas Emitidas SD</option>
+                </select>
+              </div>
+            </div>
+            <div class="chart-box"><canvas id="chPerEvo"></canvas></div>
+            <p class="chart-outlier-note" id="perEvoOutlierNote" hidden></p>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title" id="perMixTitle">Mix de Cartera por Subramo: Mercado vs. Top 10 vs. La Segunda</h3>
+                <p class="card-subtitle" id="perMixSub">Composición % de Primas Emitidas SD dentro de Personas</p>
+              </div>
+            </div>
+            <div class="chart-box"><canvas id="chPerMix"></canvas></div>
+          </div>
+        </div>
+
+        <div class="card" id="perRkCard">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title" id="perRkTitle">Ranking Top 10 + La Segunda Personas</h3>
+              <p class="card-subtitle" id="perRkSub">Click en cualquier entidad para abrir su Ficha contable y comparador de pares</p>
+            </div>
+            <div class="card-header-right">
+              <button class="btn btn-sm" id="btnPerRkToggle" type="button">Ver Todas</button>
+              <button class="btn btn-sm" id="btnExportPerRk" type="button">Exportar CSV Ranking</button>
+            </div>
+          </div>
+          <div class="table-wrap" id="perRkTableWrap"></div>
+        </div>
+
+        <div class="card" id="perCorpCard">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Gestión Financiera, Solvencia y Gastos Anexo 14 — Exclusivas de Personas</h3>
+              <p class="card-subtitle" id="perCorpSub">Inversiones, Retorno s/ Inv., Indicadores SSN C/D/E y desglose de gastos se informan únicamente a nivel entidad (Exclusivas Personas)</p>
+            </div>
+          </div>
+          <div class="grid-2" style="margin-bottom:0">
+            <div class="focus-block">
+              <div class="focus-block-hdr">
+                <h4 class="focus-block-title">Comparativo Societario (Mercado Excl. vs. Top 10 Excl. vs. La Segunda)</h4>
+              </div>
+              <div class="table-wrap" id="perCorpTableWrap"></div>
+            </div>
+            <div class="focus-block">
+              <div class="focus-block-hdr">
+                <h4 class="focus-block-title">Mix de Inversiones Anexo 2 (% s/ Inversiones Totales)</h4>
+              </div>
+              <div class="chart-box"><canvas id="chPerInvMix"></canvas></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="perViewCanales" style="display:none">
+        <div class="deck-panel-bar">
+          <button type="button" class="deck-panel-add-btn" data-deck-panel-for="perCanKpis" data-deck-panel-title="Canales Implícitos vía Comisiones — Personas (SINENSUP)" title="Agregar el panel completo de 4 KPIs como una diapositiva">+ Agregar panel KPI a presentación</button>
+        </div>
+        <div class="bench-kpi-grid bench-kpi-grid-4" id="perCanKpis"></div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title" id="perCanMixTitle">Composición de Comisiones: PAS vs. Agentes Institorios</h3>
+                <p class="card-subtitle" id="perCanMixSub">Desglose contable de Gastos de Producción (4.01.06) — Productores Asesores vs. Agentes Institorios vs. Otros</p>
+              </div>
+            </div>
+            <div class="chart-box"><canvas id="chPerCanalesMix"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title" id="perCanTopTitle">Top 15 Entidades por Canal de Comisión</h3>
+                <p class="card-subtitle" id="perCanTopSub">Estructura de comercialización implícita en Gastos de Producción (% del gasto total)</p>
+              </div>
+            </div>
+            <div class="chart-box tall"><canvas id="chPerCanalesTop"></canvas></div>
+          </div>
+        </div>
+
+        <div class="card" id="perCanTableCard">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title" id="perCanTableTitle">Matriz de Comisiones por Canal y Entidad — SINENSUP</h3>
+              <p class="card-subtitle" id="perCanTableSub">Click en cualquier entidad para abrir su Ficha contable</p>
+            </div>
+            <div class="card-header-right">
+              <button class="btn btn-sm" id="btnPerCanToggle" type="button">Ver Todas</button>
+              <button class="btn btn-sm" id="btnExportPerCan" type="button">Exportar CSV Canales</button>
+            </div>
+          </div>
+          <div class="table-wrap" id="perCanTableWrap"></div>
+        </div>
+
+        <div class="card" id="ssnCanalesCard" data-no-expand>
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Canales de Venta Oficiales SSN (Producción Directa, PAS, Sociedades e Institorios)</h3>
+              <p class="card-subtitle" id="ssnCanalesSub">Serie anual oficial declarada por las entidades aseguradoras sobre primas emitidas</p>
+            </div>
+            <div class="card-header-right">
+              <span class="ext-src-badge" id="ssnCanalesBadge">Fuente SSN · —</span>
+              <select id="ssnCanalesSeg" class="inline-input">
+                <option value="personas" selected>Agrupamiento: Seguros de Personas</option>
+                <option value="pers_excl">Actividad Principal: Exclusivas Personas (Vida)</option>
+                <option value="mix_pers">Actividad Principal: Mixtas (Cartera Personas)</option>
+                <option value="retiro_excl">Actividad Principal: Exclusivas Retiro</option>
+                <option value="patrimoniales">Agrupamiento: Daños Patrimoniales</option>
+                <option value="total">Mercado Total</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid-2" style="margin-bottom:10px">
+            <div class="focus-block">
+              <div class="focus-block-hdr">
+                <h4 class="focus-block-title" id="ssnCanEvoTitle">Evolución Histórica de Canales</h4>
+              </div>
+              <div class="chart-box"><canvas id="chSsnCanalesEvo"></canvas></div>
+            </div>
+            <div class="focus-block">
+              <div class="focus-block-hdr">
+                <h4 class="focus-block-title" id="ssnCanProvTitle">Producción de Personas y Canales por Jurisdicción</h4>
+                <div class="seg-bar" id="ssnCanProvTabs">
+                  <button class="seg-btn active" data-provmode="prod" type="button">Producción Personas ($)</button>
+                  <button class="seg-btn" data-provmode="mix" type="button">Mix Canales (%)</button>
+                </div>
+              </div>
+              <div class="chart-box"><canvas id="chSsnCanalesProv"></canvas></div>
+            </div>
+          </div>
+          <p class="chart-info-note" id="ssnCanRedNote">—</p>
+        </div>
+      </div>
+
+      <div id="perViewJudReas" style="display:none">
+        <div class="deck-panel-bar">
+          <button type="button" class="deck-panel-add-btn" data-deck-panel-for="perJudKpis" data-deck-panel-title="Judicialización y Suficiencia de Reservas — Personas" title="Agregar el panel de Judicialización e IBNR como diapositiva">+ Agregar panel KPI a presentación</button>
+        </div>
+        <div class="bench-kpi-grid bench-kpi-grid-4" id="perJudKpis"></div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title" id="perJudMixTitle">Composición de Reservas de Siniestros por Instancia</h3>
+                <p class="card-subtitle" id="perJudMixSub">Administrativo vs. En Juicios vs. Mediación vs. Liquidados vs. IBNR (% s/ Reserva Bruta 2.01.01.01)</p>
+              </div>
+            </div>
+            <div class="chart-box"><canvas id="chPerJudMix"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title" id="perJudEvoTitle">Evolución 12 Trimestres: Judicialización % e IBNR %</h3>
+                <p class="card-subtitle" id="perJudEvoSub">Trayectoria del peso de Juicios + Mediación y cobertura IBNR (La Segunda Personas vs. Mercado)</p>
+              </div>
+            </div>
+            <div class="chart-box"><canvas id="chPerJudEvo"></canvas></div>
+          </div>
+        </div>
+
+        <div class="card" id="perJudTableCard">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title" id="perJudTableTitle">Judicialización, Mediación e IBNR por Entidad</h3>
+              <p class="card-subtitle" id="perJudTableSub">Apertura del pasivo de siniestros pendientes y reserva IBNR en el alcance activo</p>
+            </div>
+            <div class="card-header-right">
+              <button class="btn btn-sm" id="btnExportPerJud" type="button">Exportar CSV Judicialización</button>
+            </div>
+          </div>
+          <div class="table-wrap" id="perJudTableWrap"></div>
+        </div>
+
+        <div class="deck-panel-bar" style="margin-top:8px">
+          <button type="button" class="deck-panel-add-btn" data-deck-panel-for="perReasKpis" data-deck-panel-title="Política y Eficiencia de Reaseguro — Personas" title="Agregar el panel de Reaseguro como diapositiva">+ Agregar panel KPI a presentación</button>
+        </div>
+        <div class="bench-kpi-grid bench-kpi-grid-4" id="perReasKpis"></div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title" id="perReasSubTitle">Tasa de Cesión % por Ramo/Subramo de Personas</h3>
+                <p class="card-subtitle" id="perReasSubDesc">Primas Cedidas (4.01.03 − 5.01.02) / Primas Emitidas SD</p>
+              </div>
+            </div>
+            <div class="chart-box"><canvas id="chPerReasSub"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title" id="perReasEffTitle">Eficiencia del Reaseguro: Recupero Total (% s/ Prima Cedida)</h3>
+                <p class="card-subtitle" id="perReasEffSub">(Stros. a/c Reaseg. + Gastos Gestión Reaseg. + Part. Util.) / Primas Cedidas (línea 100% = breakeven)</p>
+              </div>
+            </div>
+            <div class="chart-box tall"><canvas id="chPerReasEff"></canvas></div>
+          </div>
+        </div>
+
+        <div class="card" id="perReasTableCard">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title" id="perReasTableTitle">Tabla de Cesión, Retención y Recuperos de Reaseguro</h3>
+              <p class="card-subtitle" id="perReasTableSub">Compañías ordenadas por volumen de Primas Cedidas en el alcance activo</p>
+            </div>
+            <div class="card-header-right">
+              <button class="btn btn-sm" id="btnExportPerReas" type="button">Exportar CSV Reaseguro</button>
+            </div>
+          </div>
+          <div class="table-wrap" id="perReasTableWrap"></div>
+        </div>
+      </div>
+
+      <div id="perViewPolizas" style="display:none">
+        <div class="card" style="padding:12px 16px;margin-bottom:14px" data-no-expand>
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+            <div>
+              <h3 class="card-title" style="margin:0">Pólizas, Certificados Vigentes y Siniestros Pagados en Seguros de Personas</h3>
+              <p class="card-subtitle" style="margin:2px 0 0">Volumen físico oficial SSN (excluye inflación) y cruce contra Primas Constantes / Siniestros SINENSUP</p>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <span class="ext-src-badge" id="perPolBadge">Fuente SSN · —</span>
+              <button class="btn btn-primary btn-sm" id="btnExportPerPolMov" type="button">Exportar CSV Físico</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="deck-panel-bar">
+          <button type="button" class="deck-panel-add-btn" data-deck-panel-for="perPolKpis" data-deck-panel-title="Volumen Físico Personas — Pólizas y Siniestros SSN" title="Agregar panel de 4 KPIs como diapositiva">+ Agregar panel KPI a presentación</button>
+        </div>
+        <div class="kpi-grid" id="perPolKpis"></div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Movimiento Trimestral y Rotación (Churn) de Cartera — Seguros de Personas</h3>
+              <p class="card-subtitle" id="perPolMovSub">Stock inicial, altas, bajas y variación neta en cantidades físicas (Cuadro 5 SSN)</p>
+            </div>
+          </div>
+          <div class="table-wrap" id="perPolMovWrap"></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title" id="perPolSerieTitle">Evolución Trimestral de Pólizas y Certificados Vigentes</h3>
+                <p class="card-subtitle" id="perPolSerieSub">Serie trimestral oficial SSN</p>
+              </div>
+              <div class="card-header-right">
+                <select id="perPolRamoSel" class="inline-input">
+                  <option value="vida_col_cert" selected>Vida Colectivo (Certificados)</option>
+                  <option value="vida_ind_pol">Vida Individual (Pólizas)</option>
+                  <option value="ap_cert">Accidentes Personales (Certificados)</option>
+                  <option value="ap_pol">Accidentes Personales (Pólizas)</option>
+                  <option value="salud_cert">Salud (Certificados)</option>
+                  <option value="sep_col_cert">Sepelio Colectivo (Certificados)</option>
+                  <option value="sep_ind_pol">Sepelio Individual (Pólizas)</option>
+                </select>
+              </div>
+            </div>
+            <div class="chart-box"><canvas id="chPerPolSerie"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title" id="perPolCruceTitle">Cruce Físico + Contable: Prima Real o Frecuencia Siniestral</h3>
+                <p class="card-subtitle" id="perPolCruceSub">Combina Siniestros/Pólizas SSN (Cuadros 4 y 6) con Primas Constantes SINENSUP</p>
+              </div>
+              <div class="card-header-right">
+                <div class="seg-bar" id="perPolCruceTabs">
+                  <button class="seg-btn active" data-crucemode="freq" type="button">Frecuencia Siniestral</button>
+                  <button class="seg-btn" data-crucemode="prima" type="button">Prima Prom. Real</button>
+                </div>
+              </div>
+            </div>
+            <div class="chart-box"><canvas id="chPerPolCruce"></canvas></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title" id="perPolRkTitle">Ranking Top 15 por Cantidad Física de Pólizas / Certificados</h3>
+              <p class="card-subtitle">Cuadros 7 al 16 SSN — destacando presencia de La Segunda Personas en el Top 15</p>
+            </div>
+            <div class="card-header-right">
+              <select id="perPolRkSel" class="inline-input">
+                <option value="vida_col_pol" selected>Vida Colectivo — Pólizas</option>
+                <option value="vida_col_cert">Vida Colectivo — Certificados</option>
+                <option value="ap_cert">Accidentes Personales — Certificados</option>
+                <option value="ap_pol">Accidentes Personales — Pólizas</option>
+                <option value="vida_ind_pol">Vida Individual — Pólizas</option>
+                <option value="salud_cert">Salud — Certificados</option>
+                <option value="salud_pol">Salud — Pólizas</option>
+                <option value="sep_col_cert">Sepelio Colectivo — Certificados</option>
+                <option value="sep_col_pol">Sepelio Colectivo — Pólizas</option>
+                <option value="sep_ind_pol">Sepelio Individual — Pólizas</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid-2" style="margin-bottom:0">
+            <div class="focus-block">
+              <div class="focus-block-hdr">
+                <h4 class="focus-block-title" id="perPolRkChartTitle">Top 15 Entidades</h4>
+              </div>
+              <div class="chart-box tall"><canvas id="chPerPolRank"></canvas></div>
+            </div>
+            <div class="focus-block">
+              <div class="focus-block-hdr">
+                <h4 class="focus-block-title">Tabla Participación % y Acumulada</h4>
+              </div>
+              <div class="table-wrap" id="perPolRkTableWrap"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="perViewLooker" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+          <p class="card-subtitle" style="margin:0">Rankings oficiales por producto de Personas (concilia $0 con Looker Studio en base Acumulado / Moneda cierre). Click en cualquier encabezado para ordenar · Arrastrá el borde de una columna para ajustar su ancho (doble click restablece).</p>
+          <button class="btn btn-primary btn-sm" id="btnExportPerLooker" type="button">Exportar CSV (6 segmentos)</button>
+        </div>
+        <div class="looker-grid" id="perLookerGrid"></div>
+      </div>
+    </section>
+
+    <!-- TAB 5: RETIRO -->
+    <section id="tab-retiro" class="tab-pane">
+      <div class="card" data-no-expand>
+        <div class="card-header">
+          <div class="seg-bar" id="retViewTabs">
+            <button class="seg-btn active" data-view="gestion">Gestión y Subramos</button>
+            <button class="seg-btn" data-view="flujotasa">Flujo Neto y Tasa Testigo</button>
+            <button class="seg-btn" data-view="asegurados">Asegurados y Demografía (SSN)</button>
+            <button class="seg-btn" data-view="looker">Rankings</button>
+          </div>
+          <div class="card-header-right">
+            <div class="seg-bar" id="retTopByTabs">
+              <button class="seg-btn active" data-topby="emit_sd">Top 10: Primas Emitidas</button>
+              <button class="seg-btn" data-topby="comp_tec">Top 10: Reservas Matemáticas</button>
+            </div>
+            <button class="btn btn-primary" id="btnExportRet" type="button">Exportar CSV</button>
+          </div>
+        </div>
+        <div class="pr-scope-bar" id="retScopeBar">
+          <div class="pr-pill-row">
+            <span class="pr-pill-lbl" title="Permite selección múltiple">Subramos</span>
+            <div class="rm-sub-pills" id="retSubramoPills" style="margin-bottom:0"></div>
+          </div>
+          <div class="pr-meta-strip" id="retContextNote">—</div>
+        </div>
+      </div>
+
+      <div id="retViewGestion">
+        <div class="deck-panel-bar">
+          <button type="button" class="deck-panel-add-btn" data-deck-panel-for="retBenchmarkKpis" data-deck-panel-title="Indicadores de Gestión — Retiro (La Segunda vs. Top 10 vs. Mercado)" title="Agregar el panel completo de 7 KPIs como una diapositiva">+ Agregar panel KPI a presentación</button>
+        </div>
+        <div class="bench-kpi-grid bench-kpi-grid-4" id="retBenchmarkKpis"></div>
+
+        <div class="card" id="retSubMatrixCard">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Apertura por Subramo Retiro: Mercado vs. Top 10 vs. La Segunda Retiro</h3>
+              <p class="card-subtitle">Click en uno o más subramos para filtrar y combinar en toda la pestaña (en Rentas Previsionales y/o RT el Top 10 cambia automáticamente a Reservas Matemáticas)</p>
+            </div>
+            <div class="card-header-right">
+              <button class="btn btn-sm" id="btnExportRetSub" type="button">Exportar CSV Subramos</button>
+            </div>
+          </div>
+          <div class="table-wrap" id="retSubMatrixWrap"></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title" id="retFlujosTitle">Dinámica de Flujo de Fondos (% s/ Reservas Matemáticas)</h3>
+                <p class="card-subtitle" id="retFlujosSub">Primas Emitidas (+), Rescates (−), Rentas Vitalicias (−) y Flujo Neto Técnico (=)</p>
+              </div>
+            </div>
+            <div class="chart-box"><canvas id="chRetFlujos"></canvas></div>
+            <p class="chart-outlier-note" id="retFlujosOutlierNote" hidden></p>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title" id="retScatterTitle">Mapa de Posicionamiento Retiro</h3>
+                <p class="card-subtitle" id="retScatterSub">Técnico vs. Financiero o Egresos vs. Gastos de Explotación</p>
+              </div>
+              <div class="card-header-right">
+                <select id="retScatterMode" class="inline-input">
+                  <option value="tec_fin" selected>Res. Técnico s/ PT vs. Retorno Inv.</option>
+                  <option value="resc_gexpl">Tasa Egresos s/ Res. vs. G. Expl. s/ PT</option>
+                </select>
+              </div>
+            </div>
+            <div class="chart-box"><canvas id="chRetScatter"></canvas></div>
+            <p class="chart-outlier-note" id="retScatterOutlierNote" hidden></p>
+            <p class="chart-info-note" id="retScatterInfoNote" hidden></p>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title" id="retEvoTitle">Evolución 12 Trimestres: Retiro</h3>
+                <p class="card-subtitle" id="retEvoSub">Trayectoria histórica en moneda homogénea</p>
+              </div>
+              <div class="card-header-right">
+                <select id="retEvoMetric" class="inline-input">
+                  <option value="share_dual" selected>Share LS: Primas vs. Reservas (%)</option>
+                  <option value="flujo_neto_res_pct">Flujo Neto Técnico (% s/ Reservas)</option>
+                  <option value="resc_res_pct">Tasa de Rescates (% s/ Reservas)</option>
+                  <option value="gexpl_pt_pct">G. Explotación (% s/ Pas. Téc.)</option>
+                  <option value="rt_pas_tec_pct">Res. Técnico (% s/ Pas. Téc.)</option>
+                  <option value="ret_inv_pct">Retorno Inversiones (%)</option>
+                </select>
+              </div>
+            </div>
+            <div class="chart-box"><canvas id="chRetEvo"></canvas></div>
+            <p class="chart-outlier-note" id="retEvoOutlierNote" hidden></p>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title" id="retMixTitle">Mix de Reservas Matemáticas por Subramo</h3>
+                <p class="card-subtitle" id="retMixSub">Distribución del stock de Compromisos Técnicos (2.02)</p>
+              </div>
+            </div>
+            <div class="chart-box"><canvas id="chRetMix"></canvas></div>
+          </div>
+        </div>
+
+        <div class="card" id="retRkCard">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title" id="retRkTitle">Ranking Top 10 + La Segunda Retiro</h3>
+              <p class="card-subtitle" id="retRkSub">Click en cualquier compañía para abrir su Ficha contable</p>
+            </div>
+            <div class="card-header-right">
+              <button class="btn btn-sm" id="btnRetRkToggle" type="button">Ver Todas (15)</button>
+              <button class="btn btn-sm" id="btnExportRetRk" type="button">Exportar CSV Ranking</button>
+            </div>
+          </div>
+          <div class="table-wrap" id="retRkTableWrap"></div>
+        </div>
+
+        <div class="card" id="retCorpCard">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Gestión Financiera, Solvencia e Inversiones (15 Exclusivas de Retiro)</h3>
+              <p class="card-subtitle" id="retCorpSub">Cartera de Inversiones (Anexo 2), Retorno con/sin RECPAM, Solvencia SSN (C/D/E) y Gastos Anexo 14</p>
+            </div>
+          </div>
+          <div class="grid-2" style="margin-bottom:0">
+            <div class="focus-block">
+              <div class="focus-block-hdr">
+                <h4 class="focus-block-title">Comparativo Societario (Mercado vs. Top 10 vs. La Segunda Retiro)</h4>
+              </div>
+              <div class="table-wrap" id="retCorpTableWrap"></div>
+              <p class="chart-info-note" id="retCorpInfoNote" style="margin-top:8px"><strong>Nota metodológica Retiro (exposición SSN):</strong> La brecha entre <em>Retorno sin RECPAM</em> y <em>Retorno Período</em> puede variar entre entidades porque algunas absorben RECPAM en <em>Transferencia a Estructura Técnica</em> (<code>4.02.01.07</code>) o no reexpresan Reservas iniciales en <code>5.01.04</code>.</p>
+            </div>
+            <div class="focus-block">
+              <div class="focus-block-hdr">
+                <h4 class="focus-block-title">Mix de Inversiones Anexo 2 (% s/ Inversiones Totales)</h4>
+              </div>
+              <div class="chart-box"><canvas id="chRetInvMix"></canvas></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="retViewFlujoTasa" style="display:none">
+        <div class="deck-panel-bar">
+          <button type="button" class="deck-panel-add-btn" data-deck-panel-for="retFnoKpis" data-deck-panel-title="Monitor de Flujo Neto Orgánico — Retiro (SINENSUP)" title="Agregar panel de 4 KPIs como diapositiva">+ Agregar panel KPI a presentación</button>
+        </div>
+        <div class="bench-kpi-grid bench-kpi-grid-4" id="retFnoKpis"></div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title" id="retFnoRankTitle">Ranking de Flujo Neto Orgánico (15 Entidades de Retiro)</h3>
+                <p class="card-subtitle" id="retFnoRankSub">Primas Emitidas SD − Rescates − Rentas Vitalicias (verde = captación neta positiva · rojo/gris = salida neta)</p>
+              </div>
+              <div class="card-header-right">
+                <div class="seg-bar" id="retFnoUnitTabs">
+                  <button class="seg-btn active" data-fnounit="pct" type="button">% s/ Reservas</button>
+                  <button class="seg-btn" data-fnounit="abs" type="button">Montos ($)</button>
+                </div>
+              </div>
+            </div>
+            <div class="chart-box tall"><canvas id="chRetFnoRank"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title" id="retFnoEvoTitle">Evolución 12 Trimestres: Captación, Rescates, Rentas y Flujo Neto</h3>
+                <p class="card-subtitle" id="retFnoEvoSub">Tasas trimestrales/anualizadas % sobre Reservas Matemáticas (La Segunda Retiro vs. Mercado)</p>
+              </div>
+            </div>
+            <div class="chart-box tall"><canvas id="chRetFnoEvo"></canvas></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title" id="retFnoTableTitle">Tabla Completa de Flujo Neto Orgánico — 15 Entidades de Retiro</h3>
+              <p class="card-subtitle">Click en cualquier compañía para abrir su Ficha contable</p>
+            </div>
+            <div class="card-header-right">
+              <button class="btn btn-sm" id="btnExportRetFno" type="button">Exportar CSV Flujo Neto</button>
+            </div>
+          </div>
+          <div class="table-wrap" id="retFnoTableWrap"></div>
+        </div>
+
+        <div class="card" style="padding:12px 16px;margin-bottom:14px" data-no-expand>
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+            <div>
+              <h3 class="card-title" style="margin:0">Tasa Testigo Retiro Voluntario en Pesos (Res. SSN Nº 38.428)</h3>
+              <p class="card-subtitle" style="margin:2px 0 0">Rendimiento mensual testigo del Conjunto de Inversiones aplicable exclusivamente a pólizas de Retiro Voluntario</p>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <span class="ext-src-badge" id="retTtBadge">Fuente SSN · —</span>
+              <div class="seg-bar" id="retTtModeTabs">
+                <button class="seg-btn active" data-ttmode="mensual" type="button">Mensual (%)</button>
+                <button class="seg-btn" data-ttmode="ltm" type="button">Acum. 12m vs. IPC</button>
+              </div>
+              <select id="retTtHoriz" class="inline-input">
+                <option value="24" selected>Últimos 24 meses</option>
+                <option value="36">Últimos 36 meses</option>
+                <option value="2020">Desde 2020</option>
+                <option value="all">Serie completa</option>
+              </select>
+              <button class="btn btn-sm" id="btnExportRetTt" type="button">Exportar CSV Tasa</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="deck-panel-bar">
+          <button type="button" class="deck-panel-add-btn" data-deck-panel-for="retTtKpis" data-deck-panel-title="Tasa Testigo Retiro Voluntario (Res. SSN 38.428)" title="Agregar panel de 4 KPIs como diapositiva">+ Agregar panel KPI a presentación</button>
+        </div>
+        <div class="kpi-grid" id="retTtKpis"></div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title" id="retTtChartTitle">Tasa Testigo Retiro Voluntario vs. Inflación IPC</h3>
+                <p class="card-subtitle" id="retTtChartSub">Comunicación mensual Res. SSN 38.428 comparada contra variación IPC implícita en estadísticas SSN</p>
+              </div>
+            </div>
+            <div class="chart-box"><canvas id="chRetTasaTestigo"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title" id="retTtVsRetTitle">Tasa Testigo Trimestral vs. Retorno Inversiones de Retiro (12 Trim.)</h3>
+                <p class="card-subtitle">Tasa Testigo RV compuesta trimestral vs. Retorno de Inversiones sin RECPAM y con RECPAM (SINENSUP)</p>
+              </div>
+            </div>
+            <div class="chart-box"><canvas id="chRetTasaVsRetorno"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="retViewAsegurados" style="display:none">
+        <div class="card" style="padding:12px 16px;margin-bottom:14px" data-no-expand>
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+            <div>
+              <h3 class="card-title" style="margin:0">Información Estadística de Seguros de Retiro: Pólizas, Tickets Promedio y Demografía</h3>
+              <p class="card-subtitle" style="margin:2px 0 0">Asegurados en Ahorro, Rentistas por Edad/Sexo y cruce con Reservas Matemáticas y Primas SINENSUP</p>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <span class="ext-src-badge" id="retAsegBadge">Fuente SSN · —</span>
+              <button class="btn btn-primary btn-sm" id="btnExportRetAseg" type="button">Exportar CSV Retiro Físico</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="deck-panel-bar">
+          <button type="button" class="deck-panel-add-btn" data-deck-panel-for="retAsegKpis" data-deck-panel-title="Estadística Física y Tickets Promedio — Retiro (SSN)" title="Agregar panel de 4 KPIs como diapositiva">+ Agregar panel KPI a presentación</button>
+        </div>
+        <div class="bench-kpi-grid bench-kpi-grid-4" id="retAsegKpis"></div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title" id="retTicketTitle">Ticket Promedio por Asegurado (Reserva o Prima Anual)</h3>
+                <p class="card-subtitle" id="retTicketSub">Reserva Matemática promedio por póliza Individual o certificado Colectivo (y Prima anualizada SINENSUP)</p>
+              </div>
+              <div class="card-header-right">
+                <select id="retTicketMode" class="inline-input">
+                  <option value="ahorro_ind" selected>Reserva / Póliza Ahorro Individual</option>
+                  <option value="ahorro_col">Reserva / Cert. Ahorro Colectivo</option>
+                  <option value="prima_prom">Prima Anual LTM / Asegurado Total</option>
+                </select>
+              </div>
+            </div>
+            <div class="chart-box tall"><canvas id="chRetTicketComp"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title" id="retDemoTitle">Distribución Demográfica Edad × Sexo: LS Retiro vs. Mercado</h3>
+                <p class="card-subtitle" id="retDemoSub">Participación % por grupo etario y género</p>
+              </div>
+              <div class="card-header-right">
+                <select id="retDemoSeg" class="inline-input">
+                  <option value="aseg_ind" selected>Asegurados Ahorro Individual</option>
+                  <option value="aseg_col">Asegurados Ahorro Colectivo</option>
+                  <option value="rent_vol">Rentistas Retiro Voluntario (Ind.+Col.)</option>
+                </select>
+              </div>
+            </div>
+            <div class="chart-box tall"><canvas id="chRetDemoEdad"></canvas></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title" id="retSerieAsegTitle">Serie Histórica Anual de Asegurados y Rentistas de Retiro</h3>
+              <p class="card-subtitle">Expansión física de Retiro Individual vs. Colectivo y Rentistas Voluntarios al 30/06 de cada año</p>
+            </div>
+          </div>
+          <div class="chart-box"><canvas id="chRetSerieAseg"></canvas></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Detalle por Entidad de Retiro: Reservas, Pólizas, Asegurados, Rentistas y Ticket Promedio</h3>
+              <p class="card-subtitle" id="retAsegTableSub">15 compañías de Retiro según publicación oficial SSN</p>
+            </div>
+          </div>
+          <div class="table-wrap" id="retAsegTableWrap"></div>
+        </div>
+      </div>
+
+      <div id="retViewLooker" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+          <p class="card-subtitle" style="margin:0">Rankings oficiales de Retiro Individual y Retiro Colectivo (concilia $0 con Looker Studio en base Acumulado / Moneda cierre). Click en cualquier encabezado para ordenar · Arrastrá el borde de una columna para ajustar su ancho (doble click restablece).</p>
+          <button class="btn btn-primary btn-sm" id="btnExportRetLooker" type="button">Exportar CSV (2 segmentos)</button>
+        </div>
+        <div class="looker-grid" id="retLookerGrid"></div>
+      </div>
+    </section>
+
+    <!-- TAB 6: GRUPOS ECONÓMICOS Y CONSTITUCIÓN -->
+    <section id="tab-grupos" class="tab-pane">
+      <div class="card" data-no-expand>
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Consolidado por Grupos Económicos</h3>
+            <p class="card-subtitle">Click en cualquier grupo para inspeccionar las compañías que lo integran</p>
+          </div>
+          <div class="seg-bar">
+            <button class="seg-btn active" data-gmode="multi">Grupos Multicompañía (23)</button>
+            <button class="seg-btn" data-gmode="all">Todos (+ Independientes)</button>
+            <button class="btn btn-primary" id="btnExportGrp" type="button">Exportar CSV</button>
+          </div>
+        </div>
+        <div class="focus-block" style="margin-bottom:14px">
+          <div class="focus-block-hdr">
+            <h4 class="focus-block-title">Top 15 Grupos Económicos por Primas Emitidas</h4>
+          </div>
+          <div class="chart-box tall"><canvas id="chGrpTop"></canvas></div>
+          <p class="chart-outlier-note" id="grpTopOutlierNote" hidden></p>
+        </div>
+        <div class="focus-block" style="margin-bottom:16px">
+          <div class="focus-block-hdr">
+            <h4 class="focus-block-title">Tabla Consolidada por Grupos Económicos</h4>
+          </div>
+          <div class="table-wrap" id="grpTableWrap"></div>
+        </div>
+
+        <div class="card" style="background:var(--surface-alt);margin-bottom:0">
+          <div class="card-header">
+            <div>
+              <h4 class="card-title" id="grpDrillTitle">Composición interna: Grupo La Segunda</h4>
+              <p class="card-subtitle">Aporte de cada compañía al consolidado del grupo</p>
+            </div>
+          </div>
+          <div class="table-wrap" id="grpDrillWrap"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Comparativo por Constitución Societaria</h3>
+            <p class="card-subtitle">SA, SAU, Cooperativas, Mutuales, Sucursales Extranjeras y Organismos Oficiales</p>
+          </div>
+          <div class="card-header-right">
+            <button class="btn btn-primary btn-sm" id="btnExportConst" type="button">Exportar CSV</button>
+          </div>
+        </div>
+        <div class="grid-2" style="margin-bottom:0">
+          <div class="focus-block">
+            <div class="focus-block-hdr">
+              <h4 class="focus-block-title">Gráfico por Constitución Societaria</h4>
+            </div>
+            <div class="chart-box"><canvas id="chConstComp"></canvas></div>
+            <p class="chart-outlier-note" id="constCompOutlierNote" hidden></p>
+          </div>
+          <div class="focus-block">
+            <div class="focus-block-hdr">
+              <h4 class="focus-block-title">Tabla por Constitución Societaria</h4>
+            </div>
+            <div class="table-wrap" id="constTableWrap"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 7: FICHA DE ENTIDAD Y COMPARADOR -->
+    <section id="tab-ficha" class="tab-pane">
+      <div class="card" data-no-expand>
+        <div class="card-header">
+          <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;flex:1">
+            <div class="filter-field wide" style="min-width:250px;max-width:330px">
+              <label for="fichaEntityInput">Entidad Principal (Compañía o Grupo)</label>
+              <div class="combo-wrap" id="fichaEntityCombo">
+                <input type="text" id="fichaEntityInput" class="combo-input" autocomplete="off" placeholder="Buscar compañía o grupo..." role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="fichaEntityMenu" />
+                <button type="button" class="combo-toggle" id="fichaEntityToggle" tabindex="-1" aria-label="Mostrar lista">▾</button>
+                <div class="combo-menu" id="fichaEntityMenu" role="listbox"></div>
+              </div>
+            </div>
+            <div class="filter-field wide" style="min-width:230px;max-width:290px">
+              <label for="fichaPeerInput">Agregar Par para Comparar (hasta 4)</label>
+              <div class="combo-wrap" id="fichaPeerCombo">
+                <input type="text" id="fichaPeerInput" class="combo-input" autocomplete="off" placeholder="+ Buscar y agregar par..." role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="fichaPeerMenu" />
+                <button type="button" class="combo-toggle" id="fichaPeerToggle" tabindex="-1" aria-label="Mostrar lista">▾</button>
+                <div class="combo-menu" id="fichaPeerMenu" role="listbox"></div>
+              </div>
+            </div>
+            <div class="filter-field wide" style="min-width:210px;max-width:270px">
+              <label for="fichaTopCrit">Criterio "Auto Top pares"</label>
+              <select id="fichaTopCrit">
+                <option value="auto" selected>Automático (según tipo / AP+Vida)</option>
+                <option value="ap_vida">Top Primas en AP + Vida (Mercado)</option>
+                <option value="ap">Top Primas en Accidentes Personales (AP)</option>
+                <option value="vida">Top Primas en Vida (Total)</option>
+                <option value="vida_col">Top Primas en Vida Colectivo (+Oblig.)</option>
+                <option value="vida_ind">Top Primas en Vida Individual</option>
+                <option value="retiro">Top Primas en Retiro (Ind. + Col.)</option>
+                <option value="ramo_princ">Top en Ramo Principal de la Entidad</option>
+                <option value="tipo_emit">Top del Mismo Tipo (Primas Totales)</option>
+                <option value="res_ej">Top por Resultado del Ejercicio</option>
+                <option value="pn">Top por Patrimonio Neto</option>
+                <option value="inv">Top por Inversiones</option>
+              </select>
+            </div>
+            <button class="btn" id="btnAutoPeers" type="button">Aplicar Auto Top</button>
+            <button class="btn" id="btnClearPeers" type="button">Limpiar pares</button>
+            <button class="btn" id="btnFichaToBalance" type="button" title="Abrir Estado Patrimonial y Resultados completo en 9. Balance Contable">Ver Balance Contable</button>
+          </div>
+          <div class="ls-quick-btns">
+            <span style="font-size:10.5px;font-weight:700;color:var(--ink-muted)">Accesos La Segunda:</span>
+            <button class="btn btn-sm" data-quick-ent="GRP:Grupo La Segunda" type="button">Grupo Consolidado</button>
+            <button class="btn btn-sm" data-quick-ent="CIA:0317" type="button">Cooperativa</button>
+            <button class="btn btn-sm" data-quick-ent="CIA:0618" type="button">ART</button>
+            <button class="btn btn-sm" data-quick-ent="CIA:0117" type="button">Personas</button>
+            <button class="btn btn-sm" data-quick-ent="CIA:0436" type="button">Retiro</button>
+          </div>
+        </div>
+        <div id="fichaPeerChips" class="peer-chip-list"></div>
+      </div>
+
+      <div class="deck-panel-bar">
+        <button type="button" class="deck-panel-add-btn" data-deck-panel-for="fichaKpis" data-deck-panel-title="Indicadores Clave de la Entidad" title="Agregar el panel completo de KPIs como una diapositiva">+ Agregar panel KPI a presentación</button>
+      </div>
+      <div class="kpi-grid" id="fichaKpis"></div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Comparativa Peer-to-Peer vs Segmento</h3>
+              <p class="card-subtitle">Entidad principal vs pares seleccionados y promedio del segmento</p>
+            </div>
+            <div class="card-header-right">
+              <label style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;cursor:pointer;white-space:nowrap">
+                <input type="checkbox" id="fichaExclZurich" /> Promedio sin Zurich
+              </label>
+            </div>
+          </div>
+          <div class="table-wrap" id="fichaPeerTableWrap"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Comparativa Visual de Ratios</h3>
+              <p class="card-subtitle">Siniestralidad %, G. Producción %, G. Explotación % y Resultado Técnico %</p>
+            </div>
+          </div>
+          <div class="chart-box"><canvas id="chFichaPeerRatios"></canvas></div>
+          <p class="chart-outlier-note" id="fichaPeerRatiosOutlierNote" hidden></p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Evolución Histórica 12 Trimestres (Entidad vs Pares)</h3>
+            <p class="card-subtitle">Seguimiento temporal homogéneo según base temporal y moneda activas</p>
+          </div>
+          <div class="card-header-right">
+            <select id="fichaEvoMetric" class="inline-input">
+              <option value="emit_sd">Primas Emitidas SD</option>
+              <option value="prim_dev">Primas Devengadas</option>
+              <option value="comb_pct">Ratio Combinado (%)</option>
+              <option value="sin_pct">Siniestralidad (%)</option>
+              <option value="gprod_pct">Gastos de Producción (%)</option>
+              <option value="gexpl_pct">Gastos de Explotación (%)</option>
+              <option value="gto_pct">Gastos Totales Netos (%)</option>
+              <option value="res_tec">Resultado Técnico</option>
+              <option value="res_fin">Resultado Financiero</option>
+              <option value="res_ej">Resultado del Ejercicio</option>
+              <option value="inv">Inversiones</option>
+              <option value="pn">Patrimonio Neto</option>
+            </select>
+          </div>
+        </div>
+        <div class="chart-box"><canvas id="chFichaEvo"></canvas></div>
+        <p class="chart-outlier-note" id="fichaEvoOutlierNote" hidden></p>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Balance General Resumido (SSN)</h3>
+              <p class="card-subtitle">Cierre seleccionado vs cierre interanual anterior (Moneda Homogénea)</p>
+            </div>
+          </div>
+          <div class="table-wrap" id="fichaBgWrap"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Estado de Resultados (SSN)</h3>
+              <p class="card-subtitle">Estructura Técnica + Estructura Financiera (Rentas, Realiz., Tenencia y RECPAM)</p>
+            </div>
+          </div>
+          <div class="table-wrap" id="fichaErWrap"></div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Indicadores y Relaciones Técnicas (SSN)</h3>
+              <p class="card-subtitle">Indicadores C (Dependencia), D (Solvencia Líquida) y E (Solvencia / Cobertura) con zonas de referencia</p>
+            </div>
+          </div>
+          <div id="fichaIndWrap"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Gastos de Producción y Explotación (Anexo 14)</h3>
+              <p class="card-subtitle">Desglose contable e incidencia % sobre Primas Devengadas</p>
+            </div>
+          </div>
+          <div class="table-wrap" id="fichaGastosWrap"></div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Mix de Cartera por Ramo (Primas Emitidas SD)</h3>
+              <p class="card-subtitle">Participación y siniestralidad por ramo operado</p>
+            </div>
+          </div>
+          <div class="chart-box"><canvas id="chFichaRamos"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Composición de Inversiones (Anexo 2)</h3>
+              <p class="card-subtitle">Distribución de la cartera financiera al cierre (País + Exterior por instrumento)</p>
+            </div>
+          </div>
+          <div class="chart-box"><canvas id="chFichaInv"></canvas></div>
+          <div class="table-wrap" id="fichaInvTableWrap" style="margin-top:12px"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 9: BALANCE CONTABLE (ESTADO PATRIMONIAL Y RESULTADOS SSN) -->
+    <section id="tab-balance" class="tab-pane">
+      <div class="card" data-no-expand>
+        <div class="card-header">
+          <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;flex:1">
+            <div class="filter-field wide" style="min-width:270px;max-width:360px">
+              <label for="balEntityInput">Entidad (Compañía, Grupo o Total Mercado)</label>
+              <div class="combo-wrap" id="balEntityCombo">
+                <input type="text" id="balEntityInput" class="combo-input" autocomplete="off" placeholder="Buscar compañía o grupo..." role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="balEntityMenu" />
+                <button type="button" class="combo-toggle" id="balEntityToggle" tabindex="-1" aria-label="Mostrar lista">▾</button>
+                <div class="combo-menu" id="balEntityMenu" role="listbox"></div>
+              </div>
+            </div>
+            <div class="seg-bar" id="balStmtTabs" role="tablist" aria-label="Estado Contable">
+              <button class="seg-btn active" data-balstmt="patrimonial" type="button">Estado Patrimonial</button>
+              <button class="seg-btn" data-balstmt="resultados" type="button">Estado de Resultados</button>
+              <button class="seg-btn" data-balstmt="ambos" type="button">Completo (Caps. 1–5)</button>
+            </div>
+            <button class="btn" id="btnBalToFicha" type="button" title="Abrir esta entidad en 8. Ficha y Comparador">Ver Ficha</button>
+          </div>
+          <div class="bal-quick-pills" id="balQuickLS">
+            <span style="font-size:10.5px;font-weight:700;color:var(--ink-muted)">Grupo L2:</span>
+            <button class="bal-quick-btn active" data-bal-ent="CIA:0317" type="button">Cooperativa</button>
+            <button class="bal-quick-btn" data-bal-ent="CIA:0618" type="button">ART</button>
+            <button class="bal-quick-btn" data-bal-ent="CIA:0117" type="button">Personas</button>
+            <button class="bal-quick-btn" data-bal-ent="CIA:0436" type="button">Retiro</button>
+            <button class="bal-quick-btn" data-bal-ent="MKT:ALL" type="button">Mercado</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="deck-panel-bar">
+        <button type="button" class="deck-panel-add-btn" data-deck-panel-for="balSummaryKpis" data-deck-panel-title="Resumen Contable (Patrimonial y Resultados)" title="Agregar el panel de KPIs contables como diapositiva">+ Agregar panel KPI a presentación</button>
+      </div>
+      <div class="kpi-grid" id="balSummaryKpis"></div>
+
+      <div class="card" id="balTreeCard">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title" id="balTreeTitle">Estado Patrimonial — Plan de Cuentas SSN</h3>
+            <p class="card-subtitle" id="balTreeSub">Click en cualquier capítulo o rubro para expandir hasta la máxima apertura contable (niveles 1 a 8)</p>
+          </div>
+          <div class="card-header-right">
+            <button class="btn btn-primary btn-sm" id="btnExportBal" type="button">Exportar CSV</button>
+          </div>
+        </div>
+        <div class="bal-toolbar">
+          <div class="bal-depth-bar" id="balDepthBtns">
+            <span class="bal-tb-lbl">Nivel de apertura:</span>
+            <button class="btn btn-sm" data-bal-depth="1" type="button">Capítulos</button>
+            <button class="btn btn-sm" data-bal-depth="2" type="button">Rubros</button>
+            <button class="btn btn-sm" data-bal-depth="3" type="button">Subrubros</button>
+            <button class="btn btn-sm" data-bal-depth="5" type="button">Detalle</button>
+            <button class="btn btn-sm" data-bal-depth="8" type="button">Máxima apertura</button>
+            <button class="btn btn-sm" data-bal-depth="0" type="button">Colapsar</button>
+          </div>
+          <div class="bal-toolbar-right">
+            <input type="text" id="balSearch" class="inline-input" placeholder="Buscar cuenta o código (ej. 1.02.01, Sueldos, RECPAM, IBNR)..." style="width:310px" />
+            <label class="bal-check-lbl" title="Oculta capítulos/cuentas con saldo cero en el período y comparativo actual">
+              <input type="checkbox" id="balHideZero" checked /> Ocultar cuentas en $0
+            </label>
+            <label class="bal-check-lbl" title="Muestra todos los niveles intermedios del plan SSN aunque tengan el mismo nombre y único hijo">
+              <input type="checkbox" id="balStrictLevels" /> Niveles intermedios repetidos
+            </label>
+          </div>
+        </div>
+        <div class="table-wrap bal-tree-wrap" id="balTreeWrap"></div>
+        <p class="chart-info-note" id="balSignNote" hidden></p>
+      </div>
+    </section>
+
+    <!-- TAB 10: PULSO MENSUAL SSN -->
+    <section id="tab-mensual" class="tab-pane">
+      <div class="src-fresh-strip" id="ssnFreshStrip"></div>
+
+      <div class="card" style="padding:12px 16px;margin-bottom:14px" data-no-expand>
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+          <div>
+            <h2 class="card-title" style="margin:0">Evolución de la Producción Mensual del Mercado Asegurador (SSN)</h2>
+            <p class="card-subtitle" style="margin:2px 0 0" id="menContextSub">Publicación oficial mensual SSN (hasta 2 meses más reciente que el cierre trimestral SINENSUP)</p>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <div class="seg-bar" id="menUnitModeTabs">
+              <button class="seg-btn active" data-menmode="const" type="button">Valores Constantes (Reales IPC)</button>
+              <button class="seg-btn" data-menmode="corr" type="button">Valores Corrientes (Nominales)</button>
+            </div>
+            <select id="menHoriz" class="inline-input">
+              <option value="24" selected>Últimos 24 meses</option>
+              <option value="36">Últimos 36 meses</option>
+              <option value="2020">Desde 2020</option>
+              <option value="all">Serie completa</option>
+            </select>
+            <button class="btn btn-primary btn-sm" id="btnExportMen" type="button">Exportar CSV</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="deck-panel-bar">
+        <button type="button" class="deck-panel-add-btn" data-deck-panel-for="menKpis" data-deck-panel-title="Pulso Mensual del Mercado Asegurador (SSN)" title="Agregar panel KPI como diapositiva">+ Agregar panel KPI a presentación</button>
+      </div>
+      <div class="kpi-grid" id="menKpis"></div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title" id="menPersTitle">Producción Mensual — Seguros de Personas y Retiro</h3>
+              <p class="card-subtitle" id="menPersSub">Vida Individual, Vida Colectivo, Resto Personas (AP/Salud/Sepelio) y Seguros de Retiro</p>
+            </div>
+          </div>
+          <div class="chart-box tall"><canvas id="chMenPersDetalle"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title" id="menYoyTitle">Crecimiento Interanual Mensual (YoY %)</h3>
+              <p class="card-subtitle" id="menYoySub">Variación interanual real/nominal: Personas (Vida y Otros), Retiro, Patrimoniales y Total</p>
+            </div>
+          </div>
+          <div class="chart-box tall"><canvas id="chMenYoY"></canvas></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title" id="menMktTitle">Producción Mensual Total del Mercado: Patrimoniales vs. Personas y Retiro</h3>
+            <p class="card-subtitle" id="menMktSub">Millones de pesos y participación % de Seguros de Personas + Retiro</p>
+          </div>
+        </div>
+        <div class="chart-box tall"><canvas id="chMenMercado"></canvas></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Tabla Mensual Detallada (SSN)</h3>
+            <p class="card-subtitle" id="menTableSub">Orden descendente del horizonte seleccionado (millones de $)</p>
+          </div>
+        </div>
+        <div class="table-wrap" id="menTableWrap"></div>
+      </div>
+    </section>
+
+    <!-- TAB 11: METODOLOGÍA Y AUDITORÍA -->
+    <section id="tab-metodologia" class="tab-pane">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Estado de Conciliación Automática</h3>
+              <p class="card-subtitle">Verificación contra balances PDF oficiales SSN y Looker Studio Personas/Retiro</p>
+            </div>
+            <div class="card-header-right">
+              <span class="badge badge-ok" id="audGlobalStatus">—</span>
+            </div>
+          </div>
+          <div id="audSummaryWrap"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Diccionario Metodológico y Fórmulas PCU</h3>
+              <p class="card-subtitle">Criterios contables aplicados sobre la tabla Balance de SINENSUP</p>
+            </div>
+          </div>
+          <div class="table-wrap" id="audFormulasWrap"></div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Conciliación PDFs Oficiales (30/09/2026) y Looker Studio</h3>
+              <p class="card-subtitle">Diferencias máximas detectadas en la validación previa al compilado</p>
+            </div>
+          </div>
+          <div class="table-wrap" id="audBenchWrap"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Serie de Coeficientes IPC SSN (Moneda Constante)</h3>
+              <p class="card-subtitle">Autoderivada de las cifras comparativas reexpresadas en los balances oficiales</p>
+            </div>
+          </div>
+          <div class="table-wrap" id="audIpcWrap"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Matriz de Consolidación VPP y Empresa Madre (RT 21)</h3>
+            <p class="card-subtitle">Participaciones accionarias entre aseguradoras SINENSUP eliminadas en consolidados y deducción de Participación de Terceros en sociedades controladas (editable en <code>data/catalogos/participaciones_vpp.csv</code>)</p>
+          </div>
+        </div>
+        <div class="table-wrap" id="audVppWrap"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Fuentes Estadísticas Oficiales SSN Integradas y Proceso de Actualización</h3>
+            <p class="card-subtitle">Estado de cada publicación incorporada en este compilado offline y comandos de refresco automático</p>
+          </div>
+        </div>
+        <div class="table-wrap" id="audExtrasWrap"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Operación y Escalabilidad Trimestral / Mensual</h3>
+        </div>
+        <div style="font-size:12px;color:var(--ink-muted);line-height:1.65">
+          <p style="margin-top:0"><strong>Chequear novedades en vivo en SSN (balances o estadísticas):</strong> <code>python3 update_quarter.py --check</code>.</p>
+          <p><strong>Actualización mensual rápida (Producción Mensual, Tasa Testigo RV, Estadística Retiro, Canales y Pólizas):</strong> <code>python3 update_quarter.py --extras-only</code>.</p>
+          <p><strong>Incorporar un nuevo cierre trimestral completo (SINENSUP + Estadísticas SSN):</strong> ejecutar <code>python3 update_quarter.py</code> (o <code>python3 update_quarter.py --periodos YYYY-Q</code>). Auto-descubre los últimos 16 trimestres en SINENSUP, ingesta los <code>.mdb</code> nuevos, actualiza el árbol contable y las 5 fuentes estadísticas SSN, valida conciliaciones y regenera este HTML 100% offline.</p>
+          <p style="margin-bottom:0"><strong>Recompilación local rápida sin red (tras editar catálogos CSV):</strong> <code>python3 update_quarter.py --rebuild-only</code>.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal de Ampliación / Modo Presentación -->
+  <div id="focusModal" class="focus-modal" role="dialog" aria-modal="true" aria-label="Vista ampliada para presentación" aria-hidden="true">
+    <div id="focusBackdrop" class="focus-backdrop"></div>
+    <div id="focusStage" class="focus-stage">
+      <div class="focus-topbar">
+        <div class="focus-meta">
+          <span class="focus-brand-dot" aria-hidden="true"></span>
+          <span class="focus-mode-label">Vista Presentación</span>
+          <span class="focus-context-pill" id="focusContextPill">—</span>
+        </div>
+        <div class="focus-topbar-actions">
+          <button type="button" id="focusAddDeckBtn" class="focus-deck-btn" title="Capturar esta vista actual para la presentación PDF">+ Presentación</button>
+          <span class="focus-kbd-hint">ESC para cerrar</span>
+          <button type="button" id="focusCloseBtn" class="focus-close-btn" aria-label="Cerrar vista ampliada">
+            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>
+            Cerrar
+          </button>
+        </div>
+      </div>
+      <div id="focusBody" class="focus-body"></div>
+    </div>
+  </div>
+
+  <!-- Armador de Presentación PDF (Deck Builder) -->
+  <div id="deckFab" class="deck-fab" hidden>
+    <button type="button" class="deck-fab-main" id="btnFabOpenDeck" title="Ver y ordenar diapositivas">
+      <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="9" rx="1.5"/><path d="M5.5 14h5M8 11.5V14"/></svg>
+      <span>Presentación</span>
+      <span class="deck-count-badge" id="fabDeckCount">0</span>
+    </button>
+    <button type="button" class="deck-fab-pdf" id="fabQuickPdf" title="Generar PDF de presentación 16:9">PDF</button>
+  </div>
+
+  <div id="deckBackdrop" class="deck-backdrop" aria-hidden="true"></div>
+  <aside id="deckDrawer" class="deck-drawer" role="dialog" aria-modal="true" aria-label="Armador de Presentación" aria-hidden="true">
+    <div class="deck-drawer-hdr">
+      <div>
+        <h3 class="deck-drawer-title">Armador de Presentación</h3>
+        <span class="deck-summary-pill" id="deckSummaryPill">0 ítems · 0 slides</span>
+      </div>
+      <div class="deck-drawer-hdr-actions">
+        <button type="button" class="btn btn-sm" id="btnDeckClear" title="Vaciar toda la lista">Vaciar</button>
+        <button type="button" class="deck-close-icon-btn" id="btnDeckClose" aria-label="Cerrar armador">
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="deck-settings">
+      <label class="deck-check-row">
+        <input type="checkbox" id="deckIncludeCover" checked />
+        <span>Incluir carátula institucional La Segunda</span>
+      </label>
+      <div class="deck-settings-grid">
+        <div class="deck-field">
+          <label for="deckTitleInput">Título de portada</label>
+          <input type="text" id="deckTitleInput" class="inline-input" value="Informe Mercado Asegurador Argentino" maxlength="120" />
+        </div>
+        <div class="deck-field">
+          <label for="deckSubtitleInput">Subtítulo / Reunión</label>
+          <input type="text" id="deckSubtitleInput" class="inline-input" value="Balances SSN · La Segunda Seguros" maxlength="120" />
+        </div>
+        <div class="deck-field deck-field-full">
+          <label for="deckKpiGroup">Máximo de tarjetas KPI por diapositiva</label>
+          <select id="deckKpiGroup" class="inline-input">
+            <option value="4" selected>Hasta 4 KPIs por diapositiva</option>
+            <option value="2">Hasta 2 KPIs por diapositiva</option>
+            <option value="1">1 KPI suelto por diapositiva</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="deck-list" id="deckList"></div>
+
+    <div class="deck-drawer-ftr">
+      <p class="deck-print-tip">Tip PDF: en el diálogo de impresión elegí <strong>"Guardar como PDF"</strong> y activá <strong>"Gráficos de fondo"</strong>.</p>
+      <div class="deck-drawer-ftr-btns">
+        <button type="button" class="btn" id="btnDeckPreview">Vista Previa 16:9</button>
+        <button type="button" class="btn btn-primary" id="btnDeckPrint">Generar PDF</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Modal Vista Previa 16:9 -->
+  <div id="deckPreviewModal" class="deck-preview-modal" role="dialog" aria-modal="true" aria-label="Vista previa de presentación 16:9" aria-hidden="true">
+    <div class="deck-preview-topbar">
+      <div class="deck-preview-meta">
+        <span class="focus-brand-dot" aria-hidden="true"></span>
+        <span class="deck-preview-title">Vista Previa 16:9</span>
+        <span class="deck-preview-counter" id="deckPreviewCounter">Slide 1 de 1</span>
+      </div>
+      <div class="deck-preview-actions">
+        <button type="button" class="btn btn-sm" id="btnDeckPrevSlide">← Anterior</button>
+        <button type="button" class="btn btn-sm" id="btnDeckNextSlide">Siguiente →</button>
+        <button type="button" class="btn btn-primary btn-sm" id="btnDeckPreviewPrint">Generar PDF</button>
+        <button type="button" class="focus-close-btn" id="btnDeckPreviewClose" aria-label="Cerrar vista previa">Cerrar</button>
+      </div>
+    </div>
+    <div class="deck-preview-stage-wrap" id="deckPreviewStageWrap">
+      <div class="deck-preview-stage" id="deckPreviewStage"></div>
+    </div>
+    <div class="deck-preview-strip" id="deckPreviewStrip"></div>
+  </div>
+
+  <div id="deckToast" class="deck-toast" role="status" aria-live="polite" hidden></div>
+  <div id="deckPrintRoot" aria-hidden="true"></div>
+
+  <script>
+{{CHART_JS}}
+  </script>
+  <script>
+window.__SSN_DATA__ = {{DATA_JSON}};
+window.__SSN_VALIDATION__ = {{VALIDATION_JSON}};
+window.__SSN_BALANCES_TREE__ = {{BALANCES_TREE_JSON}};
+window.__SSN_EXTRAS__ = {{SSN_EXTRAS_JSON}};
+  </script>
+  <script>
+{{APP_JS}}
+  </script>
+</body>
+</html>
