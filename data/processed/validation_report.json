@@ -1,5 +1,5 @@
 {
-  "validated_at": "2026-11-23T01:29:37Z",
+  "validated_at": "2026-11-24T00:26:53Z",
   "passed": true,
   "failures": [],
   "global": {
@@ -439,7 +439,7 @@
   ],
   "ssn_extras": {
     "present": true,
-    "generated_at": "2026-11-23T01:29:30Z",
+    "generated_at": "2026-11-24T00:26:34Z",
     "missing": [],
     "stale_sources": [],
     "tasa_testigo_rv_latest": "Nov 2026",
